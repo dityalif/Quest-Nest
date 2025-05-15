@@ -45,3 +45,73 @@ exports.login = async (req, res) => {
     baseResponse(res, false, 500, error.message || "Server Error", null);
   }
 };
+
+exports.getUserByEmail = async (req, res) => {
+  const email = req.params.email;
+  if (!email) {
+    return baseResponse(res, false, 400, "Email is required", null);
+  }
+  try {
+    const user = await userRepository.getUserByEmail(email);
+    if (!user) {
+      return baseResponse(res, false, 404, "User not found", null);
+    }
+    baseResponse(res, true, 200, "User found", user);
+  } catch (error) {
+    baseResponse(res, false, 500, error.message || "Server Error", null);
+  }
+};
+
+exports.getUserById = async (req, res) => {
+  const id = req.params.id;
+  if (!id) {
+    return baseResponse(res, false, 400, "ID is required", null);
+  }
+  try {
+    const user = await userRepository.getUserById(id);
+    if (!user) {
+      return baseResponse(res, false, 404, "User not found", null);
+    }
+    baseResponse(res, true, 200, "User found", user);
+  } catch (error) {
+    baseResponse(res, false, 500, error.message || "Server Error", null);
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  const { id, email, password, name } = req.body;
+  if (!id || !email || !password || !name) {
+    return baseResponse(res, false, 400, "ID, email, password, and name are required", null);
+  }
+  if (!emailRegex.test(email)) {
+    return baseResponse(res, false, 400, "Invalid email format", null);
+  }
+  if (!passRegex.test(password)) {
+    return baseResponse(res, false, 400, "Password must be at least 6 characters", null);
+  }
+  try {
+    const user = await userRepository.updateUser({ id, email, password, name });
+    if (!user) {
+      return baseResponse(res, false, 404, "User not found", null);
+    }
+    baseResponse(res, true, 200, "User updated", user);
+  } catch (error) {
+    baseResponse(res, false, 500, error.message || "Server Error", null);
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  const id = req.params.id;
+  if (!id) {
+    return baseResponse(res, false, 400, "ID is required", null);
+  }
+  try {
+    const user = await userRepository.deleteUser(id);
+    if (!user) {
+      return baseResponse(res, false, 404, "User not found", null);
+    }
+    baseResponse(res, true, 200, "User deleted", user);
+  } catch (error) {
+    baseResponse(res, false, 500, error.message || "Server Error", null);
+  }
+};

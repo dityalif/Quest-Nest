@@ -2,25 +2,49 @@ const db = require('../database/pg.database');
 const bcrypt = require('bcrypt');
 const SALT_ROUNDS = 10;
 
-exports.checkEmailExists = async (email) => {
-  const res = await db.query('SELECT 1 FROM users WHERE email = $1', [email]);
-  return res.rowCount > 0;
-};
-
-exports.register = async ({ email, password, name }) => {
-  const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-  const res = await db.query( 
-    'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name, email',
-    [name, email, hashedPassword]
+exports.register = async (user) => {
+  const hashedPassword = await bcrypt.hash(user.password, SALT_ROUNDS);
+  const res = await db.query(
+    "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *",
+    [user.name, user.email, hashedPassword]
   );
   return res.rows[0];
 };
 
+exports.checkEmailExists = async (email) => {
+  const res = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+  return res.rows.length > 0;
+};
+
 exports.login = async (email, password) => {
-  const res = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+  const res = await db.query("SELECT * FROM users WHERE email = $1", [email]);
   const user = res.rows[0];
   if (!user) return null;
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return null;
-  return { id: user.id, name: user.name, email: user.email };
+  const comparePass = await bcrypt.compare(password, user.password);
+  if (!comparePass) return null;
+  return user;
+};
+
+exports.getUserByEmail = async (email) => {
+  const res = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+  return res.rows[0];
+};
+
+exports.getUserById = async (id) => {
+  const res = await db.query("SELECT * FROM users WHERE id = $1", [id]);
+  return res.rows[0];
+};
+
+exports.updateUser = async (user) => {
+  const hashedPassword = await bcrypt.hash(user.password, SALT_ROUNDS);
+  const res = await db.query(
+    "UPDATE users SET name = $1, email = $2, password = $3 WHERE id = $4 RETURNING *",
+    [user.name, user.email, hashedPassword, user.id]
+  );
+  return res.rows[0];
+};
+
+exports.deleteUser = async (id) => {
+  const res = await db.query("DELETE FROM users WHERE id = $1 RETURNING *", [id]);
+  return res.rows[0];
 };
