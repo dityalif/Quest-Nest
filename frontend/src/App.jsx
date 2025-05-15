@@ -1,11 +1,13 @@
-import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import HomePage from './pages/HomePage'
-import ProfilePage from './pages/ProfilePage'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import './App.css'
+import { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import HomePage from './pages/HomePage';
+import ProfilePage from './pages/ProfilePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ChallengesPage from './pages/ChallengesPage';
+import LeaderboardPage from './pages/LeaderboardPage';
+import './App.css';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -39,20 +41,22 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background-dark text-gray-800">
+    <div className="min-h-screen bg-gray-100">
       <Navbar 
         isLoggedIn={isLoggedIn} 
         userData={userData} 
         onLogout={handleLogout} 
       />
-      <div className="container mx-auto px-4 py-8">
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <Routes>
-          <Route path="/" element={<HomePage userData={userData} />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage userData={userData} />} />
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="/register" element={<RegisterPage onRegister={handleRegister} />} />
+          <Route path="/challenges" element={<ChallengesPage isLoggedIn={isLoggedIn} userData={userData} />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
         </Routes>
-      </div>
+      </main>
     </div>
-  )
+  );
 }
