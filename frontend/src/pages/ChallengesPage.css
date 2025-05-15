@@ -1,0 +1,392 @@
+/* ChallengesPage.css - Animasi dan Efek Menarik */
+
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Variables */
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+  --accent: #f59e0b;
+  --accent-dark: #d97706;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --bg-light: #f9fafb;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.15);
+  --animation-time: 0.3s;
+}
+
+/* Global Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-light);
+  background-image: linear-gradient(135deg, #f5f7ff 0%, #f9fafb 100%);
+  overflow-x: hidden;
+}
+
+.container {
+  position: relative;
+}
+
+/* Page Title Animation */
+h1.text-3xl {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 0.25rem;
+}
+
+h1.text-3xl::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: var(--accent);
+  animation: titleUnderline 1.2s ease-in-out forwards;
+}
+
+@keyframes titleUnderline {
+  0% { width: 0; }
+  100% { width: 120px; }  
+}
+
+/* Search Input Animation */
+.relative input {
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.relative input:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
+}
+
+.relative .text-gray-400 {
+  transition: all 0.3s ease;
+}
+
+.relative input:focus + .text-gray-400 {
+  color: var(--primary);
+  transform: scale(1.1);
+}
+
+/* Create Challenge Button */
+button.bg-accent {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+button.bg-accent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--accent-dark);
+  transition: all 0.4s ease-in-out;
+  z-index: -1;
+}
+
+button.bg-accent:hover::before {
+  left: 0;
+}
+
+button.bg-accent:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Filter Buttons Animation */
+.mb-6 button {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.mb-6 button:not(.bg-primary):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mb-6 button.bg-primary {
+  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+}
+
+/* Button Pulse Effect for Active Filters */
+.mb-6 button.bg-primary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%) scale(0);
+  animation: pulse 2s infinite;
+  z-index: -1;
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  60% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+
+/* Challenge Cards Animation */
+.grid > div {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: fadeIn 0.6s ease-in-out;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.grid > div:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Challenge Card Content Animation */
+.grid > div .p-6 {
+  position: relative;
+  z-index: 1;
+}
+
+.grid > div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.grid > div:hover::before {
+  transform: scaleX(1);
+}
+
+/* Challenge Difficulty Tags */
+span[class*="bg-green-100"] {
+  background: linear-gradient(135deg, rgba(167, 243, 208, 0.5) 0%, rgba(110, 231, 183, 0.5) 100%);
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+  animation: fadeIn 0.5s ease-out;
+}
+
+span[class*="bg-yellow-100"] {
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.5) 0%, rgba(253, 230, 138, 0.5) 100%);
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+  animation: fadeIn 0.5s ease-out;
+}
+
+span[class*="bg-red-100"] {
+  background: linear-gradient(135deg, rgba(254, 226, 226, 0.5) 0%, rgba(252, 165, 165, 0.5) 100%);
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Challenge Points Stars Animation */
+.text-yellow-500 {
+  animation: starTwinkle 2s infinite alternate ease-in-out;
+}
+
+@keyframes starTwinkle {
+  0% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
+}
+
+/* Join Challenge Button */
+.grid button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.grid button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 100%);
+  transition: all 0.6s ease;
+  z-index: -1;
+}
+
+.grid button:hover::before {
+  left: 100%;
+}
+
+.grid button:hover:not(:disabled) {
+  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+  letter-spacing: 0.5px;
+}
+
+/* No Challenges Found Animation */
+.py-12 {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal Animation */
+[class*="modal-backdrop"] {
+  animation: fadeBackground 0.3s ease-out forwards;
+}
+
+@keyframes fadeBackground {
+  from { background-color: rgba(0, 0, 0, 0); }
+  to { background-color: rgba(0, 0, 0, 0.5); }
+}
+
+.modal {
+  animation: modalSlideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalSlideIn {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Shimmer Loading Effect for Cards (for future implementation) */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.loading-card {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c7d2fe;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Animation for category tags */
+span:has(+ span.flex) {
+  position: relative;
+  padding-left: 0.5rem;
+}
+
+span:has(+ span.flex)::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 80%;
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+/* Challenge card staggered animation */
+.grid > div:nth-child(1) { animation-delay: 0.1s; }
+.grid > div:nth-child(2) { animation-delay: 0.2s; }
+.grid > div:nth-child(3) { animation-delay: 0.3s; }
+.grid > div:nth-child(4) { animation-delay: 0.4s; }
+.grid > div:nth-child(5) { animation-delay: 0.5s; }
+.grid > div:nth-child(6) { animation-delay: 0.6s; }
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-light: #111827;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.5);
+  }
+
+  body {
+    background-image: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+  }
+
+  .grid > div {
+    background-color: #1f2937;
+    border: 1px solid #374151;
+  }
+
+  .relative input {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+  }
+
+  .mb-6 button:not(.bg-primary) {
+    background-color: #374151;
+    color: #f9fafb;
+  }
+
+  span[class*="bg-green-100"] {
+    background: #065f46;
+    color: #d1fae5;
+  }
+
+  span[class*="bg-yellow-100"] {
+    background: #92400e;
+    color: #fef3c7;
+  }
+
+  span[class*="bg-red-100"] {
+    background: #991b1b;
+    color: #fee2e2;
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .grid > div {
+    transform: none !important;
+  }
+
+  .grid > div:hover {
+    transform: translateY(-5px) !important;
+  }
+
+  h1.text-3xl::after {
+    animation-duration: 0.8s;
+  }
+
+  .mb-6 button::after {
+    display: none;
+  }
+}

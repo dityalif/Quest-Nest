@@ -1,10 +1,12 @@
+/* Reset default padding which might cause blank screen */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
+/* Keep other animations and stylings */
 .logo {
   height: 6em;
   padding: 1.5em;
