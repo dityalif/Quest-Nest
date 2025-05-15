@@ -9,7 +9,7 @@ exports.checkEmailExists = async (email) => {
 
 exports.register = async ({ email, password, name }) => {
   const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-  const res = await db.query(
+  const res = await db.query( 
     'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name, email',
     [name, email, hashedPassword]
   );
