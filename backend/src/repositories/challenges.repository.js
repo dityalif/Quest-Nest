@@ -91,3 +91,25 @@ exports.getTeamChallenges = async (team_id) => {
   );
   return res.rows;
 };
+
+exports.addXpToUser = async (user_id, xp) => {
+  await db.query(
+    `UPDATE users
+     SET xp = xp + $1,
+         xp_weekly = xp_weekly + $1,
+         xp_monthly = xp_monthly + $1
+     WHERE id = $2`,
+    [xp, user_id]
+  );
+};
+
+exports.addXpToTeam = async (team_id, xp) => {
+  await db.query(
+    `UPDATE teams
+     SET xp = xp + $1,
+         xp_weekly = xp_weekly + $1,
+         xp_monthly = xp_monthly + $1
+     WHERE id = $2`,
+    [xp, team_id]
+  );
+};

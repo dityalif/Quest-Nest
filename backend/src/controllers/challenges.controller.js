@@ -75,6 +75,20 @@ exports.completeChallenge = async (req, res) => {
   }
   try {
     const participant = await challengeRepo.completeChallenge({ challenge_id, user_id, team_id });
+    if (!participant) return baseResponse(res, false, 404, "Participation not found", null);
+
+    // Ambil data challenge untuk mendapatkan nilai XP/points
+    const challenge = await challengeRepo.getChallengeById(challenge_id);
+    if (!challenge) return baseResponse(res, false, 404, "Challenge not found", null);
+
+    // Update XP user atau tim
+    if (user_id) {
+      await challengeRepo.addXpToUser(user_id, challenge.points);
+    }
+    if (team_id) {
+      await challengeRepo.addXpToTeam(team_id, challenge.points);
+    }
+
     baseResponse(res, true, 200, "Challenge completed", participant);
   } catch (err) {
     baseResponse(res, false, 500, err.message, null);
