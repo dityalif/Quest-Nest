@@ -15,20 +15,6 @@ exports.getAllTeams = async () => {
   return res.rows;
 };
 
-// Get team by ID 
-exports.getTeamById = async (team_id) => {
-  const teamRes = await db.query(`SELECT * FROM teams WHERE id = $1`, [team_id]);
-  if (teamRes.rows.length === 0) return null;
-  const membersRes = await db.query(
-    `SELECT u.id, u.name, u.email, tm.role, tm.joined_at
-     FROM team_members tm
-     JOIN users u ON tm.user_id = u.id
-     WHERE tm.team_id = $1`,
-    [team_id]
-  );
-  return { ...teamRes.rows[0], members: membersRes.rows };
-};
-
 // Add member to team
 exports.addMember = async ({ team_id, user_id, role = 'member' }) => {
   const res = await db.query(
@@ -57,6 +43,21 @@ exports.getTeamsByUser = async (user_id) => {
   );
   return res.rows;
 };
+
+// Get team by ID 
+exports.getTeamById = async (team_id) => {
+  const teamRes = await db.query(`SELECT * FROM teams WHERE id = $1`, [team_id]);
+  if (teamRes.rows.length === 0) return null;
+  const membersRes = await db.query(
+    `SELECT u.id, u.name, u.email, tm.role, tm.joined_at
+     FROM team_members tm
+     JOIN users u ON tm.user_id = u.id
+     WHERE tm.team_id = $1`,
+    [team_id]
+  );
+  return { ...teamRes.rows[0], members: membersRes.rows };
+};
+
 
 // Update team info
 exports.updateTeam = async ({ id, name, description }) => {

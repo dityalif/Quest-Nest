@@ -26,16 +26,6 @@ exports.getAllTeams = async (req, res) => {
   }
 };
 
-exports.getTeamById = async (req, res) => {
-  try {
-    const team = await teamRepo.getTeamById(req.params.id);
-    if (!team) return baseResponse(res, false, 404, "Team not found", null);
-    baseResponse(res, true, 200, "Team found", team);
-  } catch (err) {
-    baseResponse(res, false, 500, err.message, null);
-  }
-};
-
 exports.addMember = async (req, res) => {
   const { team_id, user_id, role } = req.body;
   if (!team_id || !user_id) {
@@ -66,6 +56,16 @@ exports.getTeamsByUser = async (req, res) => {
   try {
     const teams = await teamRepo.getTeamsByUser(req.params.user_id);
     baseResponse(res, true, 200, "User's teams", teams);
+  } catch (err) {
+    baseResponse(res, false, 500, err.message, null);
+  }
+};
+
+exports.getTeamById = async (req, res) => {
+  try {
+    const team = await teamRepo.getTeamById(req.params.id);
+    if (!team) return baseResponse(res, false, 404, "Team not found", null);
+    baseResponse(res, true, 200, "Team found", team);
   } catch (err) {
     baseResponse(res, false, 500, err.message, null);
   }
