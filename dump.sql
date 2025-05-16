@@ -44,7 +44,8 @@ CREATE TABLE user_badges (
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     badge_id UUID REFERENCES badges(id) ON DELETE CASCADE,
     earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    progress INTEGER DEFAULT 0
+    progress INTEGER DEFAULT 0,
+    UNIQUE (user_id, badge_id)
 );
 
 CREATE TABLE leaderboards (
