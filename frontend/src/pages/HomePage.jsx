@@ -11,16 +11,39 @@ const HomePage = ({ userData }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Ambil userId dari props, context, atau localStorage
-    const userId = userData?.id || localStorage.getItem('userId');
+    let userId;
+    
+    // Try to get userId from props
+    if (userData?.id) {
+      userId = userData.id;
+    } 
+    // Otherwise try to get from localStorage userData
+    else {
+      const storedUserData = localStorage.getItem('userData');
+      if (storedUserData) {
+        try {
+          const parsedUserData = JSON.parse(storedUserData);
+          userId = parsedUserData.id;
+        } catch (err) {
+          console.error("Failed to parse userData from localStorage", err);
+        }
+      }
+    }
+    
+    // If we still don't have userId, show content for non-logged in users
     if (!userId) {
-      // Handle jika user belum login
+      setIsLoading(false);
       return;
     }
+    
+    // Continue with API calls if we have userId
     Promise.all([
-      axios.get(`/users/id/${userId}`),
-      axios.get('/challenges'),
-      axios.get('/leaderboard/users')
+      axios.get(`/users/id/${userId}`).catch(e => {
+        console.error("User fetch failed:", e);
+        return { data: { data: { level: 1, xp: 0, nextLevelXp: 100, completedChallenges: 0, rank: 0 } } };
+      }),
+      axios.get('/challenges').catch(() => ({ data: { data: [] } })),
+      axios.get('/leaderboard/users').catch(() => ({ data: { data: [] } }))
     ])
       .then(([userRes, challengesRes, leaderboardRes]) => {
         setStats({
@@ -33,9 +56,9 @@ const HomePage = ({ userData }) => {
         setChallenges(challengesRes.data.data);
         setLeaderboard(leaderboardRes.data.data);
       })
-      .catch(err => console.error(err))
+      .catch(err => console.error("Promise.all failed:", err))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [userData]);
 
   const progressPercentage = stats ? (stats.xp / stats.nextLevelXp) * 100 : 0;
 

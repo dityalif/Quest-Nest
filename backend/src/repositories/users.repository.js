@@ -36,7 +36,7 @@ exports.getUserByEmail = async (email) => {
 };
 
 exports.getUserById = async (id) => {
-  const res = await db.query('SELECT id, name, username, email, xp, level, created_at, avatar, bio FROM users WHERE id = $1', [id]);
+  const res = await db.query('SELECT id, name, username, email, xp, level, created_at FROM users WHERE id = $1', [id]);
   return res.rows[0];
 };
 

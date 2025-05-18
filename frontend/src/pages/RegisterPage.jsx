@@ -74,7 +74,7 @@ const RegisterPage = ({ onRegister }) => {
           password: userData.password,
         });
         if (res.data.success) {
-          onRegister(res.data.data);
+          onRegister(res.data.data); 
           navigate('/');
         } else {
           setErrors({ general: res.data.message || 'Registration failed. Please try again.' });

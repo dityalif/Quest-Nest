@@ -32,13 +32,9 @@ export default function App() {
 
   // Updated register function to store user data
   const handleRegister = (userData) => {
-    console.log('Register successful:', userData);
-    setUserData({
-      name: userData.name,
-      username: userData.username,
-      email: userData.email,
-      avatar: 'https://i.pravatar.cc/300?img=68', // Default avatar
-    });
+    // userData di sini harus sudah berisi id, name, username, email, dst.
+    setUserData(userData);
+    localStorage.setItem('userData', JSON.stringify(userData));
     setIsLoggedIn(true);
     return true;
   };
