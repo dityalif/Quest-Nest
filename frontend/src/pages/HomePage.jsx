@@ -44,15 +44,20 @@ const HomePage = ({ userData }) => {
         return { data: { data: { level: 1, xp: 0, nextLevelXp: 100, completedChallenges: 0, rank: 0 } } };
       }),
       axios.get('/challenges').catch(() => ({ data: { data: [] } })),
-      axios.get('/leaderboard/users').catch(() => ({ data: { data: [] } }))
+      axios.get('/leaderboard/users').catch(() => ({ data: { data: [] } })),
+      axios.get(`/badges/user/${userId}`).catch(() => ({ data: { data: [] } })) // Add badges API call
     ])
-      .then(([userRes, challengesRes, leaderboardRes]) => {
+      .then(([userRes, challengesRes, leaderboardRes, badgesRes]) => {
+        // Calculate earned badges count - badges with earned_at value are considered earned
+        const earnedBadges = badgesRes.data.data.filter(badge => badge.earned_at).length;
+        
         setStats({
-          level: userRes.data.data.level,
-          xp: userRes.data.data.xp,
+          level: userRes.data.data.level || 1,
+          xp: userRes.data.data.xp || 0,
           nextLevelXp: userRes.data.data.nextLevelXp || 4000,
-          completedChallenges: userRes.data.data.completedChallenges,
-          rank: userRes.data.data.rank,
+          completedChallenges: userRes.data.data.completedChallenges || 0,
+          rank: userRes.data.data.rank || 0,
+          earnedBadges: earnedBadges || 0
         });
         setChallenges(challengesRes.data.data);
         setLeaderboard(leaderboardRes.data.data);
@@ -127,15 +132,15 @@ const HomePage = ({ userData }) => {
           </div>
           <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
             <div className="p-3 bg-gray-50 rounded-lg">
-              <div className="text-xl font-bold text-primary">{stats.completedChallenges}</div>
+              <div className="text-xl font-bold text-primary">{stats.completedChallenges || 0}</div>
               <div className="text-sm text-gray-600">Challenges Completed</div>
             </div>
             <div className="p-3 bg-gray-50 rounded-lg">
-              <div className="text-xl font-bold text-primary">{stats.rank}</div>
+              <div className="text-xl font-bold text-primary">{stats.rank || 0}</div>
               <div className="text-sm text-gray-600">Current Rank</div>
             </div>
             <div className="p-3 bg-gray-50 rounded-lg md:col-span-1 col-span-2">
-              <div className="text-xl font-bold text-primary">5</div>
+              <div className="text-xl font-bold text-primary">{stats.earnedBadges || 0}</div>
               <div className="text-sm text-gray-600">Badges Earned</div>
             </div>
           </div>

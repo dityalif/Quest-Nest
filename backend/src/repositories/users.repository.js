@@ -36,11 +36,37 @@ exports.getUserByEmail = async (email) => {
 };
 
 exports.getUserById = async (id) => {
-  const res = await db.query(
+  // First get basic user data
+  const userRes = await db.query(
     'SELECT id, name, username, email, xp, level, avatar, created_at FROM users WHERE id = $1', 
     [id]
   );
-  return res.rows[0];
+  
+  if (!userRes.rows[0]) return null;
+  const user = userRes.rows[0];
+  
+  // Get completed challenges count
+  const challengesRes = await db.query(
+    `SELECT COUNT(*) as completed_count 
+     FROM challenge_participants 
+     WHERE user_id = $1 AND status = 'completed'`, 
+    [id]
+  );
+  user.completedChallenges = parseInt(challengesRes.rows[0]?.completed_count || 0);
+  
+  // Get rank (position in leaderboard based on XP)
+  const rankRes = await db.query(
+    `SELECT COUNT(*) + 1 as rank 
+     FROM users 
+     WHERE xp > (SELECT xp FROM users WHERE id = $1)`, 
+    [id]
+  );
+  user.rank = parseInt(rankRes.rows[0]?.rank || 0);
+  
+  // Calculate nextLevelXp based on current level (simple algorithm)
+  user.nextLevelXp = user.level * 1000;
+  
+  return user;
 };
 
 exports.updateUser = async (user) => {

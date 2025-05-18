@@ -26,8 +26,8 @@ const LeaderboardPage = () => {
     // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter(user => 
-        user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.name.toLowerCase().includes(searchTerm.toLowerCase())
+        user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     
@@ -63,17 +63,6 @@ const LeaderboardPage = () => {
       key,
       direction: prevSortConfig.key === key && prevSortConfig.direction === 'asc' ? 'desc' : 'asc',
     }));
-  };
-
-  const renderTrendIcon = (trend) => {
-    switch(trend) {
-      case 'up':
-        return <FaArrowUp className="text-green-500" />;
-      case 'down':
-        return <FaArrowDown className="text-red-500" />;
-      default:
-        return null;
-    }
   };
 
   const renderRankIcon = (rank) => {
@@ -160,7 +149,6 @@ const LeaderboardPage = () => {
                       )}
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-sm font-medium">Trend</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -192,16 +180,6 @@ const LeaderboardPage = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                       {user.challengesCompleted ?? '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        {renderTrendIcon(user.trend)}
-                        <span className="ml-1 text-sm text-gray-500">
-                          {user.trend === 'up' && 'Rising'}
-                          {user.trend === 'down' && 'Falling'}
-                          {user.trend === 'same' && 'Steady'}
-                        </span>
-                      </div>
                     </td>
                   </tr>
                 ))}
