@@ -82,11 +82,10 @@ const RegisterPage = ({ onRegister }) => {
         
         if (res.data.success) {
           // Make sure avatar is included in the data passed to onRegister
-          const user = res.data.data;
-          user.avatar = avatarUrl; // Ensure avatar is included
+          const user = res.data.data;          user.avatar = avatarUrl; // Ensure avatar is included
           
           onRegister(user); 
-          navigate('/');
+          navigate('/home');
         } else {
           setErrors({ general: res.data.message || 'Registration failed. Please try again.' });
         }

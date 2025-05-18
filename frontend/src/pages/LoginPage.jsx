@@ -60,11 +60,10 @@ const LoginPage = ({ onLogin }) => {
           if (!user.avatar) {
             user.avatar = getAvatarUrl(user);
           }
-          
-          localStorage.setItem('token', token);
+            localStorage.setItem('token', token);
           localStorage.setItem('userData', JSON.stringify(user));
           onLogin(user);
-          navigate('/');
+          navigate('/home');
         } else {
           setErrors({ general: res.data.message || 'Invalid email or password' });
         }

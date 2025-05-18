@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import LandingNavbar from './components/LandingNavbar';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ChallengesPage from './pages/ChallengesPage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import LandingPage from './pages/LandingPage';
 import './App.css';
 
 export default function App() {
@@ -45,25 +47,90 @@ export default function App() {
     setUserData(null);
     localStorage.removeItem('token');
     localStorage.removeItem('userData');
-  };
-
-  return (
+  };  return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar 
-        isLoggedIn={isLoggedIn} 
-        userData={userData} 
-        onLogout={handleLogout} 
-      />
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <Routes>
-          <Route path="/" element={<HomePage userData={userData} />} />
-          <Route path="/profile" element={<ProfilePage userData={userData} />} />
-          <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-          <Route path="/register" element={<RegisterPage onRegister={handleRegister} />} />
-          <Route path="/challenges" element={<ChallengesPage isLoggedIn={isLoggedIn} userData={userData} />} />
-          <Route path="/leaderboard" element={<LeaderboardPage />} />
-        </Routes>
-      </main>
+      <Routes>
+        <Route path="/" element={
+          isLoggedIn ? (
+            <Navigate to="/home" />
+          ) : (
+            <>
+              <LandingNavbar />
+              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <LandingPage isLoggedIn={isLoggedIn} />
+              </main>
+            </>
+          )
+        } />
+
+        <Route path="/home" element={
+          isLoggedIn ? (
+            <>
+              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <HomePage userData={userData} />
+              </main>
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )
+        } />
+        
+        <Route path="/login" element={
+          <>
+            <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+            <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+              <LoginPage onLogin={handleLogin} />
+            </main>
+          </>
+        } />
+        
+        <Route path="/register" element={
+          <>
+            <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+            <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+              <RegisterPage onRegister={handleRegister} />
+            </main>
+          </>
+        } />        <Route path="/profile" element={
+          isLoggedIn ? (
+            <>
+              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <ProfilePage userData={userData} />
+              </main>
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )
+        } />
+          
+        <Route path="/challenges" element={
+          isLoggedIn ? (
+            <>
+              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <ChallengesPage isLoggedIn={isLoggedIn} userData={userData} />
+              </main>
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )
+        } />
+          
+        <Route path="/leaderboard" element={
+          isLoggedIn ? (
+            <>
+              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <LeaderboardPage />
+              </main>
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )
+        } />
+      </Routes>
     </div>
   );
 }
