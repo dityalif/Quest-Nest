@@ -12,13 +12,41 @@ const ChallengesPage = ({ isLoggedIn, userData }) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    // First get all challenges
     axios.get('/challenges')
       .then(res => {
-        setChallenges(res.data.data);
-        setFilteredChallenges(res.data.data);
+        let allChallenges = res.data.data;
+        
+        // If user is logged in, get their challenge statuses
+        if (userData?.id) {
+          axios.get(`/challenges/user/${userData.id}`)
+            .then(userRes => {
+              const userChallenges = userRes.data.data;
+              
+              // Merge user challenge status with all challenges
+              allChallenges = allChallenges.map(challenge => {
+                const userChallenge = userChallenges.find(uc => uc.id === challenge.id);
+                if (userChallenge) {
+                  return {
+                    ...challenge,
+                    status: userChallenge.status,
+                    completed: userChallenge.status === 'completed'
+                  };
+                }
+                return challenge;
+              });
+              
+              setChallenges(allChallenges);
+              setFilteredChallenges(allChallenges);
+            })
+            .catch(err => console.error("Failed to get user challenges:", err));
+        } else {
+          setChallenges(allChallenges);
+          setFilteredChallenges(allChallenges);
+        }
       })
       .catch(err => console.error(err));
-  }, []);
+  }, [userData]);
 
   // Filter challenges based on search term and active filter
   useEffect(() => {
@@ -57,6 +85,37 @@ const ChallengesPage = ({ isLoggedIn, userData }) => {
     axios.post('/challenges/join', { challenge_id: challengeId, user_id: userData.id })
       .then(() => alert('Joined challenge!'))
       .catch(err => alert('Failed to join challenge'));
+  };
+
+  const handleCompleteChallenge = (challengeId) => {
+    if (!userData?.id) return;
+    
+    axios.post('/challenges/complete', { 
+      challenge_id: challengeId, 
+      user_id: userData.id 
+    })
+      .then(() => {
+        // Update the challenges list
+        setChallenges(challenges.map(challenge => 
+          challenge.id === challengeId 
+            ? { ...challenge, status: 'completed', completed: true } 
+            : challenge
+        ));
+        
+        // Refresh the filtered challenges
+        setFilteredChallenges(prevFiltered => prevFiltered.map(challenge => 
+          challenge.id === challengeId 
+            ? { ...challenge, status: 'completed', completed: true } 
+            : challenge
+        ));
+        
+        // Show success notification
+        alert('Challenge completed! XP has been added to your profile.');
+      })
+      .catch(err => {
+        console.error("Failed to complete challenge:", err);
+        alert('Failed to complete challenge');
+      });
   };
 
   const getDifficultyColor = (difficulty) => {
@@ -142,13 +201,37 @@ const ChallengesPage = ({ isLoggedIn, userData }) => {
                   <span className="text-sm text-gray-500">By {challenge.createdBy}</span>
                   <span className="text-sm text-gray-500">{challenge.participants} participants</span>
                 </div>
-                <button 
-                  className="w-full mt-4 bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors"
-                  disabled={!isLoggedIn}
-                  onClick={() => handleJoinChallenge(challenge.id)}
-                >
-                  {isLoggedIn ? 'Join Challenge' : 'Login to Join'}
-                </button>
+
+                {/* Update button logic to show different states */}
+                {!isLoggedIn ? (
+                  <button 
+                    className="w-full mt-4 bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors opacity-70"
+                    disabled
+                  >
+                    Login to Join
+                  </button>
+                ) : challenge.status === 'completed' || challenge.completed ? (
+                  <button 
+                    className="w-full mt-4 bg-green-500 text-white py-2 rounded-md cursor-default"
+                    disabled
+                  >
+                    Completed
+                  </button>
+                ) : challenge.status === 'ongoing' ? (
+                  <button 
+                    className="w-full mt-4 bg-secondary hover:bg-secondary-dark text-white py-2 rounded-md transition-colors"
+                    onClick={() => handleCompleteChallenge(challenge.id)}
+                  >
+                    Complete Challenge
+                  </button>
+                ) : (
+                  <button 
+                    className="w-full mt-4 bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors"
+                    onClick={() => handleJoinChallenge(challenge.id)}
+                  >
+                    Join Challenge
+                  </button>
+                )}
               </div>
             </div>
           ))}
