@@ -52,22 +52,20 @@ const ProfilePage = ({ userData }) => {
           >
             <FaEdit className="text-primary" />
           </button>
-        </div>
-
-        {/* Profile Info */}
-        <div className="px-6 pb-6">
-          <div className="flex flex-col md:flex-row items-center md:items-end -mt-16 mb-4">
-            <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden shadow-lg">
+        </div>        {/* Profile Info */}
+        <div className="px-6 pb-6 relative">
+          <div className="flex flex-col items-center -mt-16 mb-4">
+            <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden shadow-lg bg-white z-10">
               <img 
                 src={getAvatarUrl(user)} 
                 alt={user?.name} 
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="md:ml-6 mt-4 md:mt-0 text-center md:text-left">
-              <h1 className="text-3xl font-bold text-gray-800">{user?.name}</h1>
+            <div className="mt-4 text-center w-full">
+              <h1 className="text-2xl font-bold text-gray-800">{user?.name}</h1>
               <p className="text-gray-600">@{user?.username}</p>
-              <div className="flex items-center mt-1 justify-center md:justify-start">
+              <div className="flex items-center mt-2 justify-center">
                 <div className="flex items-center bg-primary text-white px-3 py-1 rounded-full text-sm mr-3">
                   <FaStar className="mr-1" /> Level {user?.level}
                 </div>
