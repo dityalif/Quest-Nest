@@ -9,6 +9,7 @@ CREATE TABLE users (
     password TEXT NOT NULL,
     xp INTEGER DEFAULT 0,
     level INTEGER DEFAULT 1,
+    avatar TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

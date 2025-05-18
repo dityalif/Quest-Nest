@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
 import axios from '../api/axios';
+import { generateRandomAvatar } from '../utils/avatar';
 
 const RegisterPage = ({ onRegister }) => {
   const [userData, setUserData] = useState({
@@ -66,15 +67,25 @@ const RegisterPage = ({ onRegister }) => {
     e.preventDefault();
     if (validate()) {
       setIsLoading(true);
+      
+      // Generate a random avatar for new users
+      const avatarUrl = generateRandomAvatar(userData.name);
+      
       try {
         const res = await axios.post('/users/register', {
           name: userData.name,
           username: userData.username,
           email: userData.email,
           password: userData.password,
+          avatar: avatarUrl
         });
+        
         if (res.data.success) {
-          onRegister(res.data.data); 
+          // Make sure avatar is included in the data passed to onRegister
+          const user = res.data.data;
+          user.avatar = avatarUrl; // Ensure avatar is included
+          
+          onRegister(user); 
           navigate('/');
         } else {
           setErrors({ general: res.data.message || 'Registration failed. Please try again.' });

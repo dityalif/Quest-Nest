@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaHome, FaTrophy, FaTasks, FaUser, FaBars, FaTimes, FaSignOutAlt } from 'react-icons/fa';
+import { getAvatarUrl } from '../utils/avatar';
 
 const Navbar = ({ isLoggedIn, userData, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +44,7 @@ const Navbar = ({ isLoggedIn, userData, onLogout }) => {
                 <Link to="/profile" className="flex items-center text-white hover:text-accent px-3 py-2 rounded-md">
                   <div className="w-8 h-8 rounded-full overflow-hidden mr-2 border-2 border-white">
                     <img 
-                      src={userData.avatar} 
+                      src={getAvatarUrl(userData)} 
                       alt={userData.name}
                       className="w-full h-full object-cover"
                     />
@@ -96,7 +97,7 @@ const Navbar = ({ isLoggedIn, userData, onLogout }) => {
               <>
                 <Link to="/profile" className="text-white hover:text-accent block px-3 py-2 rounded-md text-base font-medium flex items-center" onClick={() => setIsOpen(false)}>
                   <div className="w-6 h-6 rounded-full overflow-hidden mr-2">
-                    <img src={userData.avatar} alt={userData.name} className="w-full h-full object-cover" />
+                    <img src={getAvatarUrl(userData)} alt={userData.name} className="w-full h-full object-cover" />
                   </div>
                   <span>{userData.name}</span>
                 </Link>

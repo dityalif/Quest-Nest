@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FaStar, FaTrophy, FaFireAlt, FaUsers, FaCheck } from 'react-icons/fa';
 import axios from '../api/axios';
+import { getAvatarUrl } from '../utils/avatar';
 
 const HomePage = ({ userData }) => {
   const [stats, setStats] = useState(null);
@@ -213,7 +214,7 @@ const HomePage = ({ userData }) => {
                     #{index + 1}
                   </div>
                   <div className="w-10 h-10 rounded-full overflow-hidden ml-2">
-                    <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                    <img src={getAvatarUrl(user)} alt={user.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="ml-3 flex-grow">
                     <h3 className="font-medium text-gray-800">{user.name}</h3>

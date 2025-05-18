@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaTrophy, FaMedal, FaAward, FaUser, FaArrowUp, FaArrowDown, FaSearch } from 'react-icons/fa';
 import axios from '../api/axios';
+import { getAvatarUrl } from '../utils/avatar'; // Import the avatar utility
 
 const LeaderboardPage = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -174,7 +175,11 @@ const LeaderboardPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-10 w-10 rounded-full overflow-hidden mr-3">
-                          <img src={user.avatar ?? '/vite.svg'} alt={user.username ?? user.name ?? 'User'} className="h-full w-full object-cover" />
+                          <img 
+                            src={getAvatarUrl(user)} 
+                            alt={user.username ?? user.name ?? 'User'} 
+                            className="h-full w-full object-cover" 
+                          />
                         </div>
                         <div>
                           <div className="font-medium text-gray-900">{user.name ?? '-'}</div>

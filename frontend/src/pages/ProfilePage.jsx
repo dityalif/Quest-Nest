@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaTrophy, FaMedal, FaStar, FaRegStar, FaChartLine, FaEdit, FaBolt, FaAward } from 'react-icons/fa';
 import axios from '../api/axios';
+import { getAvatarUrl } from '../utils/avatar';
 
 const ProfilePage = ({ userData }) => {
   const [user, setUser] = useState(null);
@@ -58,7 +59,7 @@ const ProfilePage = ({ userData }) => {
           <div className="flex flex-col md:flex-row items-center md:items-end -mt-16 mb-4">
             <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden shadow-lg">
               <img 
-                src={user?.avatar} 
+                src={getAvatarUrl(user)} 
                 alt={user?.name} 
                 className="w-full h-full object-cover"
               />

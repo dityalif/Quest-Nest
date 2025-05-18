@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaUser, FaLock } from 'react-icons/fa';
 import axios from '../api/axios';
+import { getAvatarUrl } from '../utils/avatar';
 
 const LoginPage = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({
@@ -51,8 +52,15 @@ const LoginPage = ({ onLogin }) => {
           email: credentials.email,
           password: credentials.password,
         });
+        
         if (res.data.success) {
           const { user, token } = res.data.data;
+          
+          // If user has no avatar, add a default one
+          if (!user.avatar) {
+            user.avatar = getAvatarUrl(user);
+          }
+          
           localStorage.setItem('token', token);
           localStorage.setItem('userData', JSON.stringify(user));
           onLogin(user);
