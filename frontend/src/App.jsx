@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
@@ -12,6 +12,15 @@ import './App.css';
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('userData');
+    if (token && userData) {
+      setUserData(JSON.parse(userData));
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   // Updated login function to store user data
   const handleLogin = (user) => {
@@ -38,6 +47,8 @@ export default function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserData(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('userData');
   };
 
   return (
@@ -49,7 +60,7 @@ export default function App() {
       />
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<HomePage userData={userData} />} />
           <Route path="/profile" element={<ProfilePage userData={userData} />} />
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="/register" element={<RegisterPage onRegister={handleRegister} />} />

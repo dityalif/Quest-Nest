@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaPlus, FaSearch, FaFire, FaStar, FaClock } from 'react-icons/fa';
 import AddChallengeModal from '../components/AddChallengeModal';
+import axios from '../api/axios';
 import './ChallengesPage.css';
 
 const ChallengesPage = ({ isLoggedIn, userData }) => {
@@ -10,61 +11,13 @@ const ChallengesPage = ({ isLoggedIn, userData }) => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
 
-  // Mock challenges data
   useEffect(() => {
-    const mockChallenges = [
-      {
-        id: 1,
-        title: 'Complete 100 Push-ups',
-        description: 'Do 100 push-ups in one day, spread across as many sets as needed.',
-        category: 'Fitness',
-        difficulty: 'Medium',
-        points: 75,
-        createdBy: 'FitnessFreak',
-        participants: 245,
-        isPopular: true,
-        isNew: false,
-      },
-      {
-        id: 2,
-        title: 'Read a Book in One Week',
-        description: 'Choose a book and finish reading it within seven days.',
-        category: 'Education',
-        difficulty: 'Easy',
-        points: 50,
-        createdBy: 'BookWorm',
-        participants: 120,
-        isPopular: false,
-        isNew: true,
-      },
-      {
-        id: 3,
-        title: 'Learn Basic JavaScript',
-        description: 'Complete a JavaScript basics course and build a small project.',
-        category: 'Programming',
-        difficulty: 'Hard',
-        points: 100,
-        createdBy: 'CodeMaster',
-        participants: 310,
-        isPopular: true,
-        isNew: false,
-      },
-      {
-        id: 4,
-        title: '30-Day Meditation Challenge',
-        description: 'Meditate for at least 10 minutes every day for 30 consecutive days.',
-        category: 'Wellness',
-        difficulty: 'Medium',
-        points: 80,
-        createdBy: 'ZenMaster',
-        participants: 175,
-        isPopular: false,
-        isNew: true,
-      },
-    ];
-    
-    setChallenges(mockChallenges);
-    setFilteredChallenges(mockChallenges);
+    axios.get('/challenges')
+      .then(res => {
+        setChallenges(res.data.data);
+        setFilteredChallenges(res.data.data);
+      })
+      .catch(err => console.error(err));
   }, []);
 
   // Filter challenges based on search term and active filter
@@ -91,17 +44,19 @@ const ChallengesPage = ({ isLoggedIn, userData }) => {
   }, [searchTerm, activeFilter, challenges]);
 
   const handleAddChallenge = (newChallenge) => {
-    const challengeWithId = {
-      ...newChallenge,
-      id: challenges.length + 1,
-      createdBy: userData ? userData.name : 'Anonymous',
-      participants: 0,
-      isNew: true,
-      isPopular: false,
-    };
-    
-    setChallenges([...challenges, challengeWithId]);
-    setShowModal(false);
+    axios.post('/challenges', newChallenge)
+      .then(res => {
+        setChallenges([...challenges, res.data.data]);
+        setShowModal(false);
+      })
+      .catch(err => console.error(err));
+  };
+
+  const handleJoinChallenge = (challengeId) => {
+    if (!userData) return;
+    axios.post('/challenges/join', { challenge_id: challengeId, user_id: userData.id })
+      .then(() => alert('Joined challenge!'))
+      .catch(err => alert('Failed to join challenge'));
   };
 
   const getDifficultyColor = (difficulty) => {
@@ -190,6 +145,7 @@ const ChallengesPage = ({ isLoggedIn, userData }) => {
                 <button 
                   className="w-full mt-4 bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors"
                   disabled={!isLoggedIn}
+                  onClick={() => handleJoinChallenge(challenge.id)}
                 >
                   {isLoggedIn ? 'Join Challenge' : 'Login to Join'}
                 </button>

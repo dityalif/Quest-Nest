@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
+import axios from '../api/axios';
 
 const RegisterPage = ({ onRegister }) => {
   const [userData, setUserData] = useState({
@@ -58,25 +59,25 @@ const RegisterPage = ({ onRegister }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (validate()) {
       setIsLoading(true);
-      
-      // Simulate API call delay
-      setTimeout(() => {
-        // Add username to the registration data
-        const success = onRegister({
-          ...userData,
-          name: userData.username // Using username as display name
+      try {
+        const res = await axios.post('/users/register', {
+          name: userData.username,
+          username: userData.username,
+          email: userData.email,
+          password: userData.password,
         });
-        
-        if (success) {
+        if (res.data.success) {
+          onRegister(res.data.data);
           navigate('/');
         } else {
-          setErrors({ general: 'Registration failed. Please try again.' });
+          setErrors({ general: res.data.message || 'Registration failed. Please try again.' });
         }
-        setIsLoading(false);
-      }, 1000);
+      } catch (err) {
+        setErrors({ general: err.response?.data?.message || 'Registration failed. Please try again.' });
+      }
+      setIsLoading(false);
     }
   };
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaUser, FaLock } from 'react-icons/fa';
+import axios from '../api/axios';
 
 const LoginPage = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({
@@ -43,29 +44,26 @@ const LoginPage = ({ onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (validate()) {
       setIsLoading(true);
-      
-      // Simulate API call delay
-      setTimeout(() => {
-        // Modified to include user data in the response
-        const userData = {
-          name: 'Samih Developer',
-          username: 'samih_dev',
+      try {
+        const res = await axios.post('/users/login', {
           email: credentials.email,
-          avatar: 'https://i.pravatar.cc/300?img=68'
-        };
-        
-        const success = onLogin(userData);
-        
-        if (success) {
+          password: credentials.password,
+        });
+        if (res.data.success) {
+          const { user, token } = res.data.data;
+          localStorage.setItem('token', token);
+          localStorage.setItem('userData', JSON.stringify(user));
+          onLogin(user);
           navigate('/');
         } else {
-          setErrors({ general: 'Invalid email or password' });
+          setErrors({ general: res.data.message || 'Invalid email or password' });
         }
-        setIsLoading(false);
-      }, 1000);
+      } catch (err) {
+        setErrors({ general: err.response?.data?.message || 'Invalid email or password' });
+      }
+      setIsLoading(false);
     }
   };
 

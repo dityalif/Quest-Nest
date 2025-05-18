@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -8,6 +9,7 @@ const challengeRoutes = require('./src/routes/challenges.route');
 const leaderboardRoutes = require('./src/routes/leaderboard.route');
 const badgeRoutes = require('./src/routes/badges.route');
 
+app.use(cors());
 app.use(express.json());
 app.use('/users', userRoutes);
 app.use('/teams', teamRoutes);

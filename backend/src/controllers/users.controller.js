@@ -1,4 +1,6 @@
 const userRepository = require('../repositories/users.repository');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passRegex = /^.{6,}$/; // minimal 6 karakter
@@ -40,7 +42,9 @@ exports.login = async (req, res) => {
     if (!user) {
       return baseResponse(res, false, 400, "Invalid email or password", null);
     }
-    baseResponse(res, true, 200, "Login success", user);
+    // Generate JWT
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+    baseResponse(res, true, 200, "Login success", { user, token });
   } catch (error) {
     baseResponse(res, false, 500, error.message || "Server Error", null);
   }

@@ -2,45 +2,44 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FaStar, FaTrophy, FaFireAlt, FaUsers, FaCheck } from 'react-icons/fa';
+import axios from '../api/axios';
 
-// Mock data
-const mockChallenges = [
-  { id: 1, title: "Complete Project Documentation", difficulty: "Medium", xp: 150, completed: true, dueDate: "2023-11-28" },
-  { id: 2, title: "Fix Critical Bugs", difficulty: "Hard", xp: 300, completed: false, dueDate: "2023-11-30" },
-  { id: 3, title: "Design User Flow", difficulty: "Easy", xp: 100, completed: false, dueDate: "2023-12-05" },
-];
-
-const mockLeaderboard = [
-  { id: 1, name: "Alex Johnson", xp: 1250, avatar: "https://i.pravatar.cc/150?img=3" },
-  { id: 2, name: "Maya Patel", xp: 980, avatar: "https://i.pravatar.cc/150?img=5" },
-  { id: 3, name: "Chris Lee", xp: 875, avatar: "https://i.pravatar.cc/150?img=8" },
-];
-
-const mockUserStats = {
-  level: 7,
-  xp: 3540,
-  nextLevelXp: 4000,
-  completedChallenges: 24,
-  rank: 5,
-};
-
-const HomePage = () => {
-  const [stats, setStats] = useState(mockUserStats);
-  const [challenges, setChallenges] = useState(mockChallenges);
-  const [leaderboard, setLeaderboard] = useState(mockLeaderboard);
+const HomePage = ({ userData }) => {
+  const [stats, setStats] = useState(null);
+  const [challenges, setChallenges] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
+    // Ambil userId dari props, context, atau localStorage
+    const userId = userData?.id || localStorage.getItem('userId');
+    if (!userId) {
+      // Handle jika user belum login
+      return;
+    }
+    Promise.all([
+      axios.get(`/users/id/${userId}`),
+      axios.get('/challenges'),
+      axios.get('/leaderboard/users')
+    ])
+      .then(([userRes, challengesRes, leaderboardRes]) => {
+        setStats({
+          level: userRes.data.data.level,
+          xp: userRes.data.data.xp,
+          nextLevelXp: userRes.data.data.nextLevelXp || 4000,
+          completedChallenges: userRes.data.data.completedChallenges,
+          rank: userRes.data.data.rank,
+        });
+        setChallenges(challengesRes.data.data);
+        setLeaderboard(leaderboardRes.data.data);
+      })
+      .catch(err => console.error(err))
+      .finally(() => setIsLoading(false));
   }, []);
 
-  const progressPercentage = (stats.xp / stats.nextLevelXp) * 100;
+  const progressPercentage = stats ? (stats.xp / stats.nextLevelXp) * 100 : 0;
 
-  if (isLoading) {
+  if (isLoading || !stats) {
     return (
       <div className="flex justify-center items-center h-[80vh]">
         <div className="animate-glow bg-primary p-4 rounded-full">
