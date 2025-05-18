@@ -4,12 +4,14 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
+    username VARCHAR(50) UNIQUE,
     email VARCHAR(100) UNIQUE NOT NULL,
     password TEXT NOT NULL,
     xp INTEGER DEFAULT 0,
     level INTEGER DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 
 CREATE TABLE challenges (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
