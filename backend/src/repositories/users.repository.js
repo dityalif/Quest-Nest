@@ -5,14 +5,19 @@ const SALT_ROUNDS = 10;
 exports.register = async (user) => {
   const hashedPassword = await bcrypt.hash(user.password, SALT_ROUNDS);
   const res = await db.query(
-    "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *",
-    [user.name, user.email, hashedPassword]
+    "INSERT INTO users (name, username, email, password) VALUES ($1, $2, $3, $4) RETURNING *",
+    [user.name, user.username, user.email, hashedPassword]
   );
   return res.rows[0];
 };
 
 exports.checkEmailExists = async (email) => {
   const res = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+  return res.rows.length > 0;
+};
+
+exports.checkUsernameExists = async (username) => {
+  const res = await db.query("SELECT * FROM users WHERE username = $1", [username]);
   return res.rows.length > 0;
 };
 
@@ -31,7 +36,7 @@ exports.getUserByEmail = async (email) => {
 };
 
 exports.getUserById = async (id) => {
-  const res = await db.query("SELECT * FROM users WHERE id = $1", [id]);
+  const res = await db.query('SELECT id, name, username, email, xp, level, created_at, avatar, bio FROM users WHERE id = $1', [id]);
   return res.rows[0];
 };
 

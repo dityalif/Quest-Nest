@@ -2,7 +2,7 @@ const db = require('../database/pg.database');
 
 async function getTopUsers(limit = 10) {
   const result = await db.query(
-    'SELECT id, name, xp FROM users ORDER BY xp DESC LIMIT $1',
+    'SELECT id, name, username, xp FROM users ORDER BY xp DESC LIMIT $1',
     [limit]
   );
   return result.rows;
@@ -23,14 +23,14 @@ async function getLeaderboard(period = null, limit = 10) {
   else if (period === 'daily') field = 'xp_daily';
 
   const result = await db.query(
-    `SELECT id, name, ${field} as xp FROM users ORDER BY ${field} DESC LIMIT $1`,
+    `SELECT id, name, username, ${field} as xp FROM users ORDER BY ${field} DESC LIMIT $1`,
     [limit]
   );
   return result.rows;
 }
 
 async function getUserOrTeamById(id) {
-  let result = await db.query('SELECT id, name, xp FROM users WHERE id = $1', [id]);
+  let result = await db.query('SELECT id, name, username, xp FROM users WHERE id = $1', [id]);
   if (result.rows.length > 0) return { type: 'user', data: result.rows[0] };
 
   result = await db.query('SELECT id, name, xp FROM teams WHERE id = $1', [id]);

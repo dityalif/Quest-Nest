@@ -6,6 +6,7 @@ import axios from '../api/axios';
 
 const RegisterPage = ({ onRegister }) => {
   const [userData, setUserData] = useState({
+    name: '',
     username: '',
     email: '',
     password: '',
@@ -19,6 +20,10 @@ const RegisterPage = ({ onRegister }) => {
     let tempErrors = {};
     let isValid = true;
 
+    if (!userData.name) {
+      tempErrors.name = 'Name is required';
+      isValid = false;
+    }
     if (!userData.username) {
       tempErrors.username = 'Username is required';
       isValid = false;
@@ -63,7 +68,7 @@ const RegisterPage = ({ onRegister }) => {
       setIsLoading(true);
       try {
         const res = await axios.post('/users/register', {
-          name: userData.username,
+          name: userData.name,
           username: userData.username,
           email: userData.email,
           password: userData.password,
@@ -104,6 +109,28 @@ const RegisterPage = ({ onRegister }) => {
         )}
         
         <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="name">
+              Name
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <FaUser className="text-gray-400" />
+              </div>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                className={`w-full pl-10 pr-3 py-3 rounded-lg border ${
+                  errors.name ? 'border-red-500' : 'border-gray-300'
+                } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                placeholder="Enter your name"
+                value={userData.name}
+                onChange={handleChange}
+              />
+            </div>
+            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+          </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="username">
               Username

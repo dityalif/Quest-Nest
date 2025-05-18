@@ -10,9 +10,9 @@ const baseResponse = (res, success, code, message, data) => {
 };
 
 exports.register = async (req, res) => {
-  const { email, password, name } = req.body;
-  if (!email || !password || !name) {
-    return baseResponse(res, false, 400, "Email, password, and name are required", null);
+  const { email, password, name, username } = req.body;
+  if (!email || !password || !name || !username) {
+    return baseResponse(res, false, 400, "Email, password, name, and username are required", null);
   }
   if (!emailRegex.test(email)) {
     return baseResponse(res, false, 400, "Invalid email format", null);
@@ -25,7 +25,11 @@ exports.register = async (req, res) => {
     if (emailExists) {
       return baseResponse(res, false, 400, "Email already used", null);
     }
-    const user = await userRepository.register({ email, password, name });
+    const usernameExists = await userRepository.checkUsernameExists(username);
+    if (usernameExists) {
+      return baseResponse(res, false, 400, "Username already used", null);
+    }
+    const user = await userRepository.register({ email, password, name, username });
     baseResponse(res, true, 201, "Register success", user);
   } catch (error) {
     baseResponse(res, false, 500, error.message || "Server Error", null);

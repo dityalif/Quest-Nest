@@ -223,7 +223,11 @@ const ProfilePage = ({ userData }) => {
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div 
                       className={`rounded-full h-full ${badge.earned ? 'bg-primary' : 'bg-gray-400'}`}
-                      style={{ width: `${parseInt(badge.progress.split('/')[0]) / parseInt(badge.progress.split('/')[1]) * 100}%` }}
+                      style={{
+                        width: badge.progress && badge.progress.includes('/')
+                          ? `${(parseInt(badge.progress.split('/')[0]) / parseInt(badge.progress.split('/')[1]) * 100) || 0}%`
+                          : '0%'
+                      }}
                     ></div>
                   </div>
                 </div>
