@@ -2,45 +2,107 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FaStar, FaTrophy, FaFireAlt, FaUsers, FaCheck } from 'react-icons/fa';
+import axios from '../api/axios';
+import { getAvatarUrl } from '../utils/avatar';
 
-// Mock data
-const mockChallenges = [
-  { id: 1, title: "Complete Project Documentation", difficulty: "Medium", xp: 150, completed: true, dueDate: "2023-11-28" },
-  { id: 2, title: "Fix Critical Bugs", difficulty: "Hard", xp: 300, completed: false, dueDate: "2023-11-30" },
-  { id: 3, title: "Design User Flow", difficulty: "Easy", xp: 100, completed: false, dueDate: "2023-12-05" },
-];
-
-const mockLeaderboard = [
-  { id: 1, name: "Alex Johnson", xp: 1250, avatar: "https://i.pravatar.cc/150?img=3" },
-  { id: 2, name: "Maya Patel", xp: 980, avatar: "https://i.pravatar.cc/150?img=5" },
-  { id: 3, name: "Chris Lee", xp: 875, avatar: "https://i.pravatar.cc/150?img=8" },
-];
-
-const mockUserStats = {
-  level: 7,
-  xp: 3540,
-  nextLevelXp: 4000,
-  completedChallenges: 24,
-  rank: 5,
-};
-
-const HomePage = () => {
-  const [stats, setStats] = useState(mockUserStats);
-  const [challenges, setChallenges] = useState(mockChallenges);
-  const [leaderboard, setLeaderboard] = useState(mockLeaderboard);
+const HomePage = ({ userData }) => {
+  const [stats, setStats] = useState(null);
+  const [challenges, setChallenges] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
+    let userId;
+    
+    // Try to get userId from props
+    if (userData?.id) {
+      userId = userData.id;
+    } 
+    // Otherwise try to get from localStorage userData
+    else {
+      const storedUserData = localStorage.getItem('userData');
+      if (storedUserData) {
+        try {
+          const parsedUserData = JSON.parse(storedUserData);
+          userId = parsedUserData.id;
+        } catch (err) {
+          console.error("Failed to parse userData from localStorage", err);
+        }
+      }
+    }
+    
+    // If we still don't have userId, show content for non-logged in users
+    if (!userId) {
       setIsLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
-  }, []);
+      return;
+    }
+    
+    // Continue with API calls if we have userId
+    Promise.all([
+      axios.get(`/users/id/${userId}`).catch(e => {
+        console.error("User fetch failed:", e);
+        return { data: { data: { level: 1, xp: 0, nextLevelXp: 100, completedChallenges: 0, rank: 0 } } };
+      }),
+      axios.get(`/challenges/user/${userId}`).catch(() => ({ data: { data: [] } })), 
+      axios.get('/leaderboard/users').catch(() => ({ data: { data: [] } })),
+      axios.get(`/badges/user/${userId}`).catch(() => ({ data: { data: [] } }))
+    ])
+      .then(([userRes, challengesRes, leaderboardRes, badgesRes]) => {
+        // Calculate earned badges count - badges with earned_at value are considered earned
+        const earnedBadges = badgesRes.data.data.filter(badge => badge.earned_at).length;
+        
+        setStats({
+          level: userRes.data.data.level || 1,
+          xp: userRes.data.data.xp || 0,
+          nextLevelXp: userRes.data.data.nextLevelXp || 4000,
+          completedChallenges: userRes.data.data.completedChallenges || 0,
+          rank: userRes.data.data.rank || 0,
+          earnedBadges: earnedBadges || 0
+        });
+        setChallenges(challengesRes.data.data);
+        setLeaderboard(leaderboardRes.data.data);
+      })
+      .catch(err => console.error("Promise.all failed:", err))
+      .finally(() => setIsLoading(false));
+  }, [userData]);
 
-  const progressPercentage = (stats.xp / stats.nextLevelXp) * 100;
+  const handleCompleteChallenge = (challengeId) => {
+    if (!userData?.id) return;
+    
+    axios.post('/challenges/complete', { 
+      challenge_id: challengeId, 
+      user_id: userData.id 
+    })
+      .then(res => {
+        // Update the challenges list to show completed status
+        setChallenges(challenges.map(challenge => 
+          challenge.id === challengeId 
+            ? { ...challenge, completed: true, status: 'completed' } 
+            : challenge
+        ));
+        
+        // Update user stats (XP and completed challenges count)
+        const completedChallenge = challenges.find(c => c.id === challengeId);
+        if (completedChallenge && completedChallenge.points) {
+          setStats(prevStats => ({
+            ...prevStats,
+            xp: prevStats.xp + completedChallenge.points,
+            completedChallenges: prevStats.completedChallenges + 1
+          }));
+        }
+        
+        // Show success message
+        alert(`Challenge completed! You earned ${completedChallenge?.points || 0} XP`);
+      })
+      .catch(err => {
+        console.error("Failed to complete challenge:", err);
+        alert('Failed to complete challenge. Please try again.');
+      });
+  };
 
-  if (isLoading) {
+  const progressPercentage = stats ? (stats.xp / stats.nextLevelXp) * 100 : 0;
+
+  if (isLoading || !stats) {
     return (
       <div className="flex justify-center items-center h-[80vh]">
         <div className="animate-glow bg-primary p-4 rounded-full">
@@ -104,15 +166,15 @@ const HomePage = () => {
           </div>
           <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
             <div className="p-3 bg-gray-50 rounded-lg">
-              <div className="text-xl font-bold text-primary">{stats.completedChallenges}</div>
+              <div className="text-xl font-bold text-primary">{stats.completedChallenges || 0}</div>
               <div className="text-sm text-gray-600">Challenges Completed</div>
             </div>
             <div className="p-3 bg-gray-50 rounded-lg">
-              <div className="text-xl font-bold text-primary">{stats.rank}</div>
+              <div className="text-xl font-bold text-primary">{stats.rank || 0}</div>
               <div className="text-sm text-gray-600">Current Rank</div>
             </div>
             <div className="p-3 bg-gray-50 rounded-lg md:col-span-1 col-span-2">
-              <div className="text-xl font-bold text-primary">5</div>
+              <div className="text-xl font-bold text-primary">{stats.earnedBadges || 0}</div>
               <div className="text-sm text-gray-600">Badges Earned</div>
             </div>
           </div>
@@ -139,7 +201,7 @@ const HomePage = () => {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-semibold text-gray-800 flex items-center">
-                        {challenge.completed && <FaCheck className="text-green-500 mr-2" />}
+                        {(challenge.status === 'completed' || challenge.completed) && <FaCheck className="text-green-500 mr-2" />}
                         {challenge.title}
                       </h3>
                       <div className="flex items-center mt-1 text-sm">
@@ -154,9 +216,19 @@ const HomePage = () => {
                       </div>
                     </div>
                     <span className="font-bold text-primary flex items-center">
-                      {challenge.xp} XP
+                      {challenge.points || challenge.xp} XP
                     </span>
                   </div>
+                  
+                  {/* Add Complete button for challenges that are joined but not completed */}
+                  {challenge.status === 'ongoing' && (
+                    <button
+                      onClick={() => handleCompleteChallenge(challenge.id)}
+                      className="mt-3 w-full py-1 px-3 bg-secondary hover:bg-secondary-dark text-white text-sm rounded transition-colors"
+                    >
+                      Complete Challenge
+                    </button>
+                  )}
                 </motion.div>
               ))}
             </div>
@@ -191,7 +263,7 @@ const HomePage = () => {
                     #{index + 1}
                   </div>
                   <div className="w-10 h-10 rounded-full overflow-hidden ml-2">
-                    <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                    <img src={getAvatarUrl(user)} alt={user.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="ml-3 flex-grow">
                     <h3 className="font-medium text-gray-800">{user.name}</h3>

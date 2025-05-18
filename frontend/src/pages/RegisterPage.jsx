@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
+import axios from '../api/axios';
+import { generateRandomAvatar } from '../utils/avatar';
 
 const RegisterPage = ({ onRegister }) => {
   const [userData, setUserData] = useState({
+    name: '',
     username: '',
     email: '',
     password: '',
@@ -18,6 +21,10 @@ const RegisterPage = ({ onRegister }) => {
     let tempErrors = {};
     let isValid = true;
 
+    if (!userData.name) {
+      tempErrors.name = 'Name is required';
+      isValid = false;
+    }
     if (!userData.username) {
       tempErrors.username = 'Username is required';
       isValid = false;
@@ -58,25 +65,34 @@ const RegisterPage = ({ onRegister }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (validate()) {
       setIsLoading(true);
       
-      // Simulate API call delay
-      setTimeout(() => {
-        // Add username to the registration data
-        const success = onRegister({
-          ...userData,
-          name: userData.username // Using username as display name
+      // Generate a random avatar for new users
+      const avatarUrl = generateRandomAvatar(userData.name);
+      
+      try {
+        const res = await axios.post('/users/register', {
+          name: userData.name,
+          username: userData.username,
+          email: userData.email,
+          password: userData.password,
+          avatar: avatarUrl
         });
         
-        if (success) {
-          navigate('/');
+        if (res.data.success) {
+          // Make sure avatar is included in the data passed to onRegister
+          const user = res.data.data;          user.avatar = avatarUrl; // Ensure avatar is included
+          
+          onRegister(user); 
+          navigate('/home');
         } else {
-          setErrors({ general: 'Registration failed. Please try again.' });
+          setErrors({ general: res.data.message || 'Registration failed. Please try again.' });
         }
-        setIsLoading(false);
-      }, 1000);
+      } catch (err) {
+        setErrors({ general: err.response?.data?.message || 'Registration failed. Please try again.' });
+      }
+      setIsLoading(false);
     }
   };
 
@@ -103,6 +119,28 @@ const RegisterPage = ({ onRegister }) => {
         )}
         
         <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="name">
+              Name
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <FaUser className="text-gray-400" />
+              </div>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                className={`w-full pl-10 pr-3 py-3 rounded-lg border ${
+                  errors.name ? 'border-red-500' : 'border-gray-300'
+                } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                placeholder="Enter your name"
+                value={userData.name}
+                onChange={handleChange}
+              />
+            </div>
+            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+          </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="username">
               Username

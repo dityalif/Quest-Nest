@@ -1,15 +1,28 @@
-import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import HomePage from './pages/HomePage'
-import ProfilePage from './pages/ProfilePage'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import './App.css'
+import { useState, useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import LandingNavbar from './components/LandingNavbar';
+import HomePage from './pages/HomePage';
+import ProfilePage from './pages/ProfilePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ChallengesPage from './pages/ChallengesPage';
+import LeaderboardPage from './pages/LeaderboardPage';
+import LandingPage from './pages/LandingPage';
+import './App.css';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('userData');
+    if (token && userData) {
+      setUserData(JSON.parse(userData));
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   // Updated login function to store user data
   const handleLogin = (user) => {
@@ -21,13 +34,9 @@ export default function App() {
 
   // Updated register function to store user data
   const handleRegister = (userData) => {
-    console.log('Register successful:', userData);
-    setUserData({
-      name: userData.name,
-      username: userData.username,
-      email: userData.email,
-      avatar: 'https://i.pravatar.cc/300?img=68', // Default avatar
-    });
+    // userData di sini harus sudah berisi id, name, username, email, dst.
+    setUserData(userData);
+    localStorage.setItem('userData', JSON.stringify(userData));
     setIsLoggedIn(true);
     return true;
   };
@@ -36,23 +45,92 @@ export default function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserData(null);
-  };
+    localStorage.removeItem('token');
+    localStorage.removeItem('userData');
+  };  return (
+    <div className="min-h-screen bg-gray-100">
+      <Routes>
+        <Route path="/" element={
+          isLoggedIn ? (
+            <Navigate to="/home" />
+          ) : (
+            <>
+              <LandingNavbar />
+              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <LandingPage isLoggedIn={isLoggedIn} />
+              </main>
+            </>
+          )
+        } />
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background-dark text-gray-800">
-      <Navbar 
-        isLoggedIn={isLoggedIn} 
-        userData={userData} 
-        onLogout={handleLogout} 
-      />
-      <div className="container mx-auto px-4 py-8">
-        <Routes>
-          <Route path="/" element={<HomePage userData={userData} />} />
-          <Route path="/profile" element={<ProfilePage userData={userData} />} />
-          <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-          <Route path="/register" element={<RegisterPage onRegister={handleRegister} />} />
-        </Routes>
-      </div>
+        <Route path="/home" element={
+          isLoggedIn ? (
+            <>
+              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <HomePage userData={userData} />
+              </main>
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )
+        } />
+        
+        <Route path="/login" element={
+          <>
+            <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+            <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+              <LoginPage onLogin={handleLogin} />
+            </main>
+          </>
+        } />
+        
+        <Route path="/register" element={
+          <>
+            <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+            <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+              <RegisterPage onRegister={handleRegister} />
+            </main>
+          </>
+        } />        <Route path="/profile" element={
+          isLoggedIn ? (
+            <>
+              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <ProfilePage userData={userData} />
+              </main>
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )
+        } />
+          
+        <Route path="/challenges" element={
+          isLoggedIn ? (
+            <>
+              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <ChallengesPage isLoggedIn={isLoggedIn} userData={userData} />
+              </main>
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )
+        } />
+          
+        <Route path="/leaderboard" element={
+          isLoggedIn ? (
+            <>
+              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <LeaderboardPage />
+              </main>
+            </>
+          ) : (
+            <Navigate to="/login" />
+          )
+        } />
+      </Routes>
     </div>
-  )
+  );
 }
