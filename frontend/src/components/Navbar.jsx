@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaHome, FaTrophy, FaTasks, FaUser, FaBars, FaTimes, FaSignOutAlt, FaChevronDown, FaUserCircle } from 'react-icons/fa';
+import { FaHome, FaTrophy, FaTasks, FaUser, FaBars, FaTimes, FaSignOutAlt, FaChevronDown, FaUserCircle, FaUsers } from 'react-icons/fa';
 import { getAvatarUrl } from '../utils/avatar';
 
 const Navbar = ({ isLoggedIn, userData, onLogout }) => {
@@ -46,7 +46,8 @@ const Navbar = ({ isLoggedIn, userData, onLogout }) => {
                 Quest<span className="text-accent">Nest</span>
               </Link>
             </div>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">              <Link to="/home" className="text-white hover:text-accent px-3 py-2 rounded-md text-sm font-medium flex items-center">
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">              
+              <Link to="/home" className="text-white hover:text-accent px-3 py-2 rounded-md text-sm font-medium flex items-center">
                 <FaHome className="mr-1" /> Home
               </Link>
               <Link to="/challenges" className="text-white hover:text-accent px-3 py-2 rounded-md text-sm font-medium flex items-center">
@@ -54,6 +55,9 @@ const Navbar = ({ isLoggedIn, userData, onLogout }) => {
               </Link>
               <Link to="/leaderboard" className="text-white hover:text-accent px-3 py-2 rounded-md text-sm font-medium flex items-center">
                 <FaTrophy className="mr-1" /> Leaderboard
+              </Link>
+              <Link to="/teams" className="text-white hover:text-accent px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                <FaUsers className="mr-1" /> Teams
               </Link>
             </div>
           </div>          <div className="hidden sm:ml-6 sm:flex sm:items-center">
