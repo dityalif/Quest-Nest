@@ -321,9 +321,12 @@ const HomePage = ({ userData }) => {
           ))}
         </div>
         <div className="mt-4 text-center">
-          <button className="bg-secondary hover:bg-secondary-dark text-white font-medium px-4 py-2 rounded-md transition-colors duration-300">
+          <Link 
+            to="/teams" 
+            className="bg-secondary hover:bg-secondary-dark text-white font-medium px-4 py-2 rounded-md transition-colors duration-300"
+          >
             Create or Join Team
-          </button>
+          </Link>
         </div>
       </motion.section>
     </motion.div>
