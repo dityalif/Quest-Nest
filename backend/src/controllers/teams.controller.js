@@ -93,3 +93,13 @@ exports.deleteTeam = async (req, res) => {
     baseResponse(res, false, 500, err.message, null);
   }
 };
+
+exports.getTeamMembersStats = async (req, res) => {
+  try {
+    const team_id = req.params.team_id;
+    const members = await teamRepo.getTeamMembersStats(team_id);
+    baseResponse(res, true, 200, "Team members stats", members);
+  } catch (err) {
+    baseResponse(res, false, 500, err.message, null);
+  }
+};
