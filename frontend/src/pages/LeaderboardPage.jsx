@@ -3,6 +3,7 @@ import { FaTrophy, FaMedal, FaAward, FaUser, FaArrowUp, FaArrowDown, FaSearch, F
 import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
 import { useNavigate } from 'react-router-dom';
+import './LeaderboardPage.css';
 
 const LeaderboardPage = () => {
   const navigate = useNavigate();
