@@ -9,6 +9,7 @@ const HomePage = ({ userData }) => {
   const [stats, setStats] = useState(null);
   const [challenges, setChallenges] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [userTeams, setUserTeams] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -45,9 +46,10 @@ const HomePage = ({ userData }) => {
       }),
       axios.get(`/challenges/user/${userId}`).catch(() => ({ data: { data: [] } })), 
       axios.get('/leaderboard/users').catch(() => ({ data: { data: [] } })),
-      axios.get(`/badges/user/${userId}`).catch(() => ({ data: { data: [] } }))
+      axios.get(`/badges/user/${userId}`).catch(() => ({ data: { data: [] } })),
+      axios.get(`/teams/user/${userId}`).catch(() => ({ data: { data: [] } })) // Get user teams
     ])
-      .then(([userRes, challengesRes, leaderboardRes, badgesRes]) => {
+      .then(([userRes, challengesRes, leaderboardRes, badgesRes, userTeamsRes]) => {
         // Calculate earned badges count - badges with earned_at value are considered earned
         const earnedBadges = badgesRes.data.data.filter(badge => badge.earned_at).length;
         
@@ -61,6 +63,7 @@ const HomePage = ({ userData }) => {
         });
         setChallenges(challengesRes.data.data);
         setLeaderboard(leaderboardRes.data.data);
+        setUserTeams(userTeamsRes.data.data);
       })
       .catch(err => console.error("Promise.all failed:", err))
       .finally(() => setIsLoading(false));
@@ -294,32 +297,42 @@ const HomePage = ({ userData }) => {
         <h2 className="text-xl font-bold mb-4 flex items-center">
           <FaUsers className="text-blue-500 mr-2" /> Your Teams
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map((team) => (
-            <motion.div
-              key={team}
-              whileHover={{ scale: 1.03 }}
-              className="p-4 border rounded-md hover:border-primary transition-all duration-300"
-            >
-              <h3 className="font-semibold text-gray-800">Development Squad #{team}</h3>
-              <div className="text-sm text-gray-600 mt-1">5 Members • 3 Active Challenges</div>
-              <div className="mt-3 flex justify-between items-center">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4].map((member) => (
-                    <div key={member} className="w-7 h-7 rounded-full border-2 border-white overflow-hidden">
-                      <img 
-                        src={`https://i.pravatar.cc/150?img=${member + 10}`} 
-                        alt="Team Member" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
+        {userTeams.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {userTeams.map((team) => (
+              <motion.div
+                key={team.id}
+                whileHover={{ scale: 1.03 }}
+                className="p-4 border rounded-md hover:border-primary transition-all duration-300"
+              >
+                <h3 className="font-semibold text-gray-800">{team.name}</h3>
+                <div className="text-sm text-gray-600 mt-1">
+                  {team.member_count || '0'} Members • {team.active_challenges || '0'} Active Challenges
                 </div>
-                <span className="text-sm text-primary font-semibold">1,250 XP</span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                <div className="mt-3 flex justify-between items-center">
+                  <div className="flex -space-x-2">
+                    {team.members ? team.members.slice(0, 4).map((member, index) => (
+                      <div key={index} className="w-7 h-7 rounded-full border-2 border-white overflow-hidden">
+                        <img 
+                          src={getAvatarUrl(member) || `https://i.pravatar.cc/150?img=${index + 10}`}
+                          alt="Team Member" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )) : (
+                      <div className="text-sm text-gray-500">No members</div>
+                    )}
+                  </div>
+                  <span className="text-sm text-primary font-semibold">{team.xp || 0} XP</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-gray-50 rounded-lg p-6 text-center">
+            <p className="text-gray-600 mb-4">You haven't joined any teams yet.</p>
+          </div>
+        )}
         <div className="mt-4 text-center">
           <Link 
             to="/teams" 
