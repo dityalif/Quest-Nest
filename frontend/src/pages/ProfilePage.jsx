@@ -213,7 +213,7 @@ const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
           transition={{ duration: 0.5, delay: 0.2 }}
           className="bg-white dark:bg-[#1f2937] rounded-lg shadow p-6"
         >          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-            <FaMedal className="mr-2 text-primary dark:text-blue-400 fill-primary dark:fill-blue-400" style={{color: 'var(--color-primary, #1e40af)'}} /> Badges
+            <FaMedal className="mr-2" style={{ color: '#1e40af' }} /> Badges
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {badges.map((badge) => (              <motion.div
