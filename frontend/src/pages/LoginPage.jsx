@@ -73,16 +73,14 @@ const LoginPage = ({ onLogin }) => {
       }
       setIsLoading(false);
     }
-  };
-
-  return (
+  };  return (
     <div className="min-h-[80vh] flex flex-col justify-center items-center py-12 px-4">
       <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg"
-      >
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg"
+        >
         <div className="flex justify-center mb-6">
           <div className="bg-blue-500 text-white p-3 rounded-full">
             <FaUser size={24} />
@@ -154,18 +152,15 @@ const LoginPage = ({ onLogin }) => {
               'Login'
             )}
           </button>
-        </form>
-        
-        <div className="text-center mt-6">
-          <p className="text-gray-600">
-            Already have an account?{' '}
-            <Link to="/register" className="text-blue-500 hover:text-blue-700 font-medium">
-              Login
-            </Link>
-          </p>
-        </div>
-      </motion.div>
-    </div>
+        </form>          <div className="text-center mt-6">
+            <p className="text-gray-600">
+              Don't have an account?{' '}
+              <Link to="/register" className="text-blue-500 hover:text-blue-700 font-medium">
+                Register
+              </Link>
+            </p>
+          </div>
+      </motion.div>    </div>
   );
 };
 

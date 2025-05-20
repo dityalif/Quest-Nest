@@ -104,7 +104,46 @@ exports.checkAndClaimBadges = async (user_id) => {
     'xp': (user, badge) => user.xp >= badge.value,
     'challenge': (user, completedChallenges) => completedChallenges >= badge.value,
     'team_founder': (user, _, isTeamFounder) => isTeamFounder,
-    // Add more badge types as needed
+    'streak': async (user_id) => {
+      const streakRes = await db.query(
+        `SELECT COUNT(*) as days_streak FROM (
+          SELECT DISTINCT DATE(completed_at) as completion_date
+          FROM challenge_participants
+          WHERE user_id = $1 AND status = 'completed'
+          ORDER BY completion_date DESC
+          LIMIT 7
+        ) as daily_completions
+        WHERE completion_date >= CURRENT_DATE - INTERVAL '7 days'`,
+        [user_id]
+      );
+      return parseInt(streakRes.rows[0]?.days_streak || 0) >= 7;
+    },
+    'comeback': async (user_id) => {
+      const comebackRes = await db.query(
+        `SELECT EXISTS (
+          SELECT 1 FROM challenge_participants 
+          WHERE user_id = $1 
+          AND status = 'completed' 
+          AND completed_at > (
+            SELECT MAX(completed_at) + INTERVAL '7 days' 
+            FROM challenge_participants 
+            WHERE user_id = $1 AND status = 'completed'
+            AND completed_at < CURRENT_DATE - INTERVAL '7 days'
+          )
+        ) as has_comeback`,
+        [user_id, user_id]
+      );
+      return comebackRes.rows[0]?.has_comeback || false;
+    },
+    'teams_joined': async (user_id) => {
+      const teamsRes = await db.query(
+        `SELECT COUNT(DISTINCT team_id) as team_count 
+         FROM team_members 
+         WHERE user_id = $1`,
+        [user_id]
+      );
+      return parseInt(teamsRes.rows[0]?.team_count || 0) >= 3;
+    }
   };
 
   for (const badge of badges) {
