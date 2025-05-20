@@ -1,6 +1,20 @@
-import { useState, useEffect } from 'react';
+import { 
+  useState, 
+  useEffect 
+} from 'react';
 import { motion } from 'framer-motion';
-import { FaTrophy, FaMedal, FaStar, FaRegStar, FaChartLine, FaEdit, FaBolt, FaAward } from 'react-icons/fa';
+import { 
+  FaTrophy, 
+  FaMedal, 
+  FaStar, 
+  FaRegStar, 
+  FaChartLine, 
+  FaEdit, 
+  FaBolt, 
+  FaAward,
+  FaUsers,
+  FaUserPlus
+} from 'react-icons/fa';
 import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -230,41 +244,43 @@ const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
               <motion.div
                 key={badge.id}
                 whileHover={{ scale: 1.03 }}
-                className={`p-4 rounded-lg border ${badge.earned ? 'border-primary bg-primary bg-opacity-5' : 'border-gray-200'}`}
+                className={`p-4 rounded-lg ${
+                  badge.earned 
+                    ? 'bg-primary border-primary text-white' 
+                    : 'border border-gray-200 text-gray-700'
+                }`}
               >
-                <div className="flex justify-between items-center mb-2">
-                  <div className="p-2 rounded-full bg-gray-100">
+                <div className="flex justify-between items-center mb-3">
+                  <div className={`p-2 rounded-full ${badge.earned ? 'bg-white bg-opacity-20' : 'bg-gray-100'}`}>
                     <div className="text-2xl">
-                      {badge.icon}
+                      {badge.condition === 'create_team' || badge.condition === 'team_founder' ? (
+                        <FaUsers />
+                      ) : badge.condition === 'first_challenge_completed' ? (
+                        <FaBolt />
+                      ) : badge.condition === 'join_3_teams' ? (
+                        <FaUserPlus />
+                      ) : (
+                        <FaAward />
+                      )}
                     </div>
                   </div>
                   {badge.earned ? (
-                    <FaStar className="text-yellow-500" />
+                    <FaStar className="text-yellow-300" />
                   ) : (
                     <FaRegStar className="text-gray-300" />
                   )}
                 </div>
-                <h3 className="font-semibold text-gray-800">{badge.name}</h3>
-                <p className="text-xs text-gray-600 mt-1">{badge.description}</p>
-                <div className="mt-2 text-xs">
-                  <div className="flex justify-between mb-1">
-                    <span className="font-medium">Progress</span>
-                    <span>{badge.progress}</span>
+                <h3 className={`font-semibold ${badge.earned ? 'text-white' : 'text-gray-800'}`}>
+                  {badge.name}
+                </h3>
+                <p className={`text-xs mt-1 ${badge.earned ? 'text-white text-opacity-80' : 'text-gray-600'}`}>
+                  {badge.description}
+                </p>
+                {badge.earned && (
+                  <div className="mt-2 text-xs text-white text-opacity-90">
+                    <span>Earned on {new Date(badge.earned_at).toLocaleDateString()}</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className={`rounded-full h-full ${badge.earned ? 'bg-primary' : 'bg-gray-400'}`}
-                      style={{
-                        width: (() => {
-                          if (!badge.progress || !badge.progress.includes('/')) return '0%';
-                          const [curr, total] = badge.progress.split('/').map(Number);
-                          if (!total || isNaN(curr) || isNaN(total)) return '0%';
-                          return `${Math.min(100, Math.round((curr / total) * 100))}%`;
-                        })()
-                      }}
-                    ></div>
-                  </div>
-                </div>
+                )}
               </motion.div>
             ))}
           </div>

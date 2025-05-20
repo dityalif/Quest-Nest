@@ -5,6 +5,7 @@ import { FaStar, FaTrophy, FaFireAlt, FaUsers, FaCheck, FaMedal, FaAward } from 
 import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
 import LoadingSpinner from '../components/LoadingSpinner';
+import BadgeNotification from '../components/BadgeNotification';
 
 const HomePage = ({ userData }) => {
   const [stats, setStats] = useState(null);
@@ -16,6 +17,7 @@ const HomePage = ({ userData }) => {
   const [userTeamsMembers, setUserTeamsMembers] = useState({});
   const [userTeam, setUserTeam] = useState(null);
   const [teamMembers, setTeamMembers] = useState([]);
+  const [newBadge, setNewBadge] = useState(null);
 
   useEffect(() => {
     let userId;
@@ -152,6 +154,31 @@ const HomePage = ({ userData }) => {
         alert('Failed to complete challenge. Please try again.');
       });
   };
+
+  const markAsCompleted = (challenge) => {
+    const payload = {
+      challenge_id: challenge.id,
+      user_id: userData.id
+    };
+    
+    axios.post('/challenges/complete', payload)
+      .then(res => {
+        fetchUserChallenges();
+        fetchStats();
+        
+        // Check if new badges were earned (First Blood potentially)
+        if (res.data.data.newBadges && res.data.data.newBadges.length > 0) {
+          setNewBadge(res.data.data.newBadges[0]);
+        }
+        
+        alert(`Challenge completed! You earned ${challenge.points || 0} XP`);
+      })
+      .catch(err => {
+        console.error("Failed to complete challenge:", err);
+        alert('Failed to complete challenge. Please try again.');
+      });
+  };
+
   const progressPercentage = stats ? (stats.xp / stats.nextLevelXp) * 100 : 0;
   if (isLoading || !stats) {
     return (
@@ -405,6 +432,14 @@ const HomePage = ({ userData }) => {
           </Link>
         </div>
       </motion.section>
+
+      {/* Add badge notification */}
+      {newBadge && (
+        <BadgeNotification 
+          badge={newBadge} 
+          onClose={() => setNewBadge(null)} 
+        />
+      )}
     </motion.div>
   );
 };

@@ -5,6 +5,7 @@ import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
 import CreateTeamModal from '../components/CreateTeamModal';
 import LoadingSpinner from '../components/LoadingSpinner';
+import BadgeNotification from '../components/BadgeNotification';
 import './TeamsPage.css';
 
 const TeamsPage = ({ isLoggedIn, userData }) => {
@@ -17,6 +18,7 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [userTeamsXp, setUserTeamsXp] = useState({}); 
   const [allTeamsXp, setAllTeamsXp] = useState({});
+  const [newBadge, setNewBadge] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,42 +88,43 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
     }
   }, [filteredTeams]);
 
-  const handleCreateTeam = async (newTeam) => {
-    try {
-      const response = await axios.post('/teams', {
-        ...newTeam,
-        creator_id: userData.id
-      });
-      
-      if (response.data.success) {
-        setTeams([...teams, response.data.data]);
-        setUserTeams([...userTeams, response.data.data]);
+  const handleCreateTeam = (formData) => {
+    axios.post('/teams', {
+      ...formData,
+      creator_id: userData.id
+    })
+      .then(res => {
+        alert('Team created successfully!');
         setShowModal(false);
-      }
-    } catch (error) {
-      console.error('Error creating team:', error);
-    }
+        fetchUserTeams();
+        
+        // Check if Ancestor badge was earned
+        if (res.data.data.newBadges && res.data.data.newBadges.length > 0) {
+          setNewBadge(res.data.data.newBadges[0]);
+        }
+      })
+      .catch(err => {
+        alert(`Failed to create team: ${err.response?.data?.message || 'Unknown error'}`);
+      });
   };
 
-  const handleJoinTeam = async (teamId) => {
-    if (!userData?.id) return;
-    
-    try {
-      await axios.post('/teams/add-member', {
-        team_id: teamId,
-        user_id: userData.id,
-        role: 'member'
+  const handleJoinTeam = (team_id) => {
+    axios.post('/teams/join', {
+      team_id,
+      user_id: userData.id
+    })
+      .then(res => {
+        alert('Joined team successfully!');
+        fetchUserTeams();
+        
+        // Check if Social Butterfly badge was earned
+        if (res.data.data.newBadges && res.data.data.newBadges.length > 0) {
+          setNewBadge(res.data.data.newBadges[0]);
+        }
+      })
+      .catch(err => {
+        alert(`Failed to join team: ${err.response?.data?.message || 'Unknown error'}`);
       });
-      
-      // Refresh user teams
-      const userTeamsResponse = await axios.get(`/teams/user/${userData.id}`);
-      setUserTeams(userTeamsResponse.data.data);
-      
-      alert('You have successfully joined the team!');
-    } catch (error) {
-      console.error('Error joining team:', error);
-      alert('Failed to join team. Please try again.');
-    }
   };
 
   const handleLeaveTeam = async (teamId) => {
@@ -332,6 +335,14 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
         <CreateTeamModal 
           onClose={() => setShowModal(false)} 
           onCreateTeam={handleCreateTeam}
+        />
+      )}
+
+      {/* Add badge notification */}
+      {newBadge && (
+        <BadgeNotification 
+          badge={newBadge} 
+          onClose={() => setNewBadge(null)} 
         />
       )}
     </div>

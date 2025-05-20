@@ -69,22 +69,23 @@ exports.joinChallenge = async (req, res) => {
 };
 
 exports.completeChallenge = async (req, res) => {
-  const { challenge_id, user_id, team_id } = req.body;
-  if (!challenge_id || (!user_id && !team_id)) {
-    return baseResponse(res, false, 400, "challenge_id and user_id or team_id are required", null);
-  }
   try {
+    const { challenge_id, user_id, team_id } = req.body;
     const participant = await challengeRepo.completeChallenge({ challenge_id, user_id, team_id });
     if (!participant) return baseResponse(res, false, 404, "Participation not found", null);
 
-    // Ambil data challenge untuk mendapatkan nilai XP/points
+    // Get challenge data for XP/points
     const challenge = await challengeRepo.getChallengeById(challenge_id);
     if (!challenge) return baseResponse(res, false, 404, "Challenge not found", null);
 
-    // Update XP user atau tim
+    // Update XP for user or team
     if (user_id) {
       await challengeRepo.addXpToUser(user_id, challenge.points);
+      // Check for badges (like First Blood)
+      const newBadges = await badgeRepo.checkAndClaimBadges(user_id);
+      participant.newBadges = newBadges;
     }
+    
     if (team_id) {
       await challengeRepo.addXpToTeam(team_id, challenge.points);
     }

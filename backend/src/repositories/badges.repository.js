@@ -67,60 +67,78 @@ exports.claimBadge = async (user_id, badge_id) => {
   return res.rows[0];
 };
 
-// Cek dan klaim badge yang memenuhi syarat untuk user
+// Enhance checkAndClaimBadges function to handle all badge types
 exports.checkAndClaimBadges = async (user_id) => {
-  // Ambil semua badge
+  // Get all badges
   const badges = await exports.getAllBadges();
-  // Ambil data user
+  // Get user data
   const userRes = await db.query('SELECT * FROM users WHERE id = $1', [user_id]);
   const user = userRes.rows[0];
   if (!user) return [];
 
-  // Ambil jumlah challenge yang sudah diselesaikan user
+  // Get completed challenges count
   const completedRes = await db.query(
     `SELECT COUNT(*) as completed FROM challenge_participants WHERE user_id = $1 AND status = 'completed'`,
     [user_id]
   );
   const completedChallenges = parseInt(completedRes.rows[0]?.completed || 0);
 
-  // Ambil badges yang sudah diklaim user
+  // Get badges already claimed by user
   const userBadgesRes = await db.query(
     `SELECT badge_id FROM user_badges WHERE user_id = $1`,
     [user_id]
   );
   const claimedBadgeIds = userBadgesRes.rows.map(r => r.badge_id);
 
-  // Check if user is a team founder
+  // Check if user is a team founder (Ancestor badge)
   const teamFounderRes = await db.query(
     `SELECT COUNT(*) as founder_count FROM teams WHERE creator_id = $1`,
     [user_id]
   );
   const isTeamFounder = parseInt(teamFounderRes.rows[0]?.founder_count || 0) > 0;
 
+  // Check how many teams the user has joined (Social Butterfly badge)
+  const teamsJoinedRes = await db.query(
+    `SELECT COUNT(DISTINCT team_id) as team_count 
+     FROM team_members 
+     WHERE user_id = $1`,
+    [user_id]
+  );
+  const teamsJoined = parseInt(teamsJoinedRes.rows[0]?.team_count || 0);
+
   const newlyClaimed = [];
 
-  // A more comprehensive badge checking approach
+  // Complete badge checkers for all badge types
   const badgeCheckers = {
     'xp': (user, badge) => user.xp >= badge.value,
-    'challenge': (user, completedChallenges) => completedChallenges >= badge.value,
-    'team_founder': (user, _, isTeamFounder) => isTeamFounder,
-    // Add more badge types as needed
+    'challenge': (user, badge) => completedChallenges >= badge.value,
+    'create_team': () => isTeamFounder,
+    'team_founder': () => isTeamFounder, // For backward compatibility
+    'first_challenge_completed': () => completedChallenges >= 1,
+    'join_3_teams': () => teamsJoined >= 3
   };
 
+  // Check each badge and claim if eligible
   for (const badge of badges) {
-    // Contoh rule: badge.type = 'xp', badge.value = 1000, badge.type = 'challenge', badge.value = 10
+    // Skip if badge already claimed
+    if (claimedBadgeIds.includes(badge.id)) continue;
+    
+    // The condition field has the type of check to perform
+    const condition = badge.condition || badge.type; // Use condition field, fallback to type
+    
+    // Check if user qualifies for badge
     let eligible = false;
-    if (badgeCheckers[badge.type] && 
-        badgeCheckers[badge.type](user, completedChallenges, isTeamFounder)) {
-      eligible = true;
+    if (badgeCheckers[condition]) {
+      eligible = badgeCheckers[condition](user, badge);
     }
-
-    if (eligible && !claimedBadgeIds.includes(badge.id)) {
-      // Klaim badge
-      await exports.claimBadge(user_id, badge.id);
-      newlyClaimed.push(badge);
+    
+    // Claim badge if eligible
+    if (eligible) {
+      const claimed = await exports.claimBadge(user_id, badge.id);
+      if (claimed) newlyClaimed.push(badge);
     }
   }
+
   return newlyClaimed;
 };
 

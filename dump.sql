@@ -90,6 +90,6 @@ INSERT INTO badges (name, description, condition) VALUES
 ('Consistency King', 'Selesaikan challenge selama 7 hari berturut-turut.', 'complete_challenge_7_days_streak'),
 ('Challenge Master', 'Selesaikan 20 challenge.', 'complete_20_challenges'),
 ('First Blood', 'Selesaikan challenge pertama.', 'first_challenge_completed'),
-('Team Founder', 'Membuat tim baru.', 'create_team'),
+('Ancestor', 'Membuat tim baru.', 'create_team'),
 ('Social Butterfly', 'Bergabung dengan 3 tim berbeda.', 'join_3_teams'),
 ('Night Owl', 'Selesaikan challenge setelah jam 10 malam.', 'complete_challenge_after_10pm');
