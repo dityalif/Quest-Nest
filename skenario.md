@@ -6,7 +6,7 @@ ERD
 ![proyek akhirr_sbd_erd.drawio](https://hackmd.io/_uploads/By0CupKZlg.png)
 
 UML
-![diagram-export-5-20-2025-6_55_19-PM](https://hackmd.io/_uploads/SJh6T1c-ee.png)
+![Untitled Diagram.drawio](https://hackmd.io/_uploads/Byy7-Mqble.png)
 
 Flowchart 
 ![Flowchart_QuestNest](https://hackmd.io/_uploads/H1U38l9bxe.jpg)
