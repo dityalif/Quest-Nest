@@ -11,6 +11,8 @@ const HomePage = ({ userData }) => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [userTeams, setUserTeams] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userTeamsXp, setUserTeamsXp] = useState({});
+  const [userTeamsMembers, setUserTeamsMembers] = useState({});
 
   useEffect(() => {
     let userId;
@@ -68,6 +70,23 @@ const HomePage = ({ userData }) => {
       .catch(err => console.error("Promise.all failed:", err))
       .finally(() => setIsLoading(false));
   }, [userData]);
+
+  useEffect(() => {
+    if (userTeams.length > 0) {
+      userTeams.forEach(async (team) => {
+        try {
+          const res = await axios.get(`/teams/${team.id}/members/stats`);
+          const members = res.data.data || [];
+          const totalXp = members.reduce((sum, member) => sum + (member.xp || 0), 0);
+          setUserTeamsXp(prev => ({ ...prev, [team.id]: totalXp }));
+          setUserTeamsMembers(prev => ({ ...prev, [team.id]: members.length }));
+        } catch (err) {
+          setUserTeamsXp(prev => ({ ...prev, [team.id]: 0 }));
+          setUserTeamsMembers(prev => ({ ...prev, [team.id]: 0 }));
+        }
+      });
+    }
+  }, [userTeams]);
 
   const handleCompleteChallenge = (challengeId) => {
     if (!userData?.id) return;
@@ -307,11 +326,11 @@ const HomePage = ({ userData }) => {
               >
                 <h3 className="font-semibold text-gray-800">{team.name}</h3>
                 <div className="text-sm text-gray-600 mt-1">
-                  {team.member_count || '0'} Members • {team.active_challenges || '0'} Active Challenges
+                  {(userTeamsMembers[team.id] !== undefined ? userTeamsMembers[team.id] : (team.members ? team.members.length : team.member_count)) || '0'} Members • {(userTeamsXp[team.id] || 0)} XP
                 </div>
                 <div className="mt-3 flex justify-between items-center">
                   <div className="flex -space-x-2">
-                    {team.members ? team.members.slice(0, 4).map((member, index) => (
+                    {team.members && team.members.slice(0, 4).map((member, index) => (
                       <div key={index} className="w-7 h-7 rounded-full border-2 border-white overflow-hidden">
                         <img 
                           src={getAvatarUrl(member) || `https://i.pravatar.cc/150?img=${index + 10}`}
@@ -319,11 +338,9 @@ const HomePage = ({ userData }) => {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                    )) : (
-                      <div className="text-sm text-gray-500">No members</div>
-                    )}
+                    ))}
                   </div>
-                  <span className="text-sm text-primary font-semibold">{team.xp || 0} XP</span>
+                  <span className="text-sm text-primary font-semibold">{userTeamsXp[team.id] || 0} XP</span>
                 </div>
               </motion.div>
             ))}

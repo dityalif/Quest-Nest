@@ -51,6 +51,12 @@ const ProfilePage = ({ userData }) => {
 
   const progressPercentage = user ? (user.xp / user.nextLevelXp) * 100 : 0;
 
+  const refreshBadges = () => {
+    if (!userData) return;
+    axios.get(`/badges/user/${userData.id}`)
+      .then(res => setBadges(res.data.data));
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -238,9 +244,12 @@ const ProfilePage = ({ userData }) => {
                     <div 
                       className={`rounded-full h-full ${badge.earned ? 'bg-primary' : 'bg-gray-400'}`}
                       style={{
-                        width: badge.progress && badge.progress.includes('/')
-                          ? `${(parseInt(badge.progress.split('/')[0]) / parseInt(badge.progress.split('/')[1]) * 100) || 0}%`
-                          : '0%'
+                        width: (() => {
+                          if (!badge.progress || !badge.progress.includes('/')) return '0%';
+                          const [curr, total] = badge.progress.split('/').map(Number);
+                          if (!total || isNaN(curr) || isNaN(total)) return '0%';
+                          return `${Math.min(100, Math.round((curr / total) * 100))}%`;
+                        })()
                       }}
                     ></div>
                   </div>
