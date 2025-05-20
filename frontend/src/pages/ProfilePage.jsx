@@ -205,16 +205,15 @@ const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
             </p>
           </div>
         </div>
-      </div>      {/* Badges Section - Full Width */}
-      <div className="w-full">
+      </div>      {/* Badges Section - Full Width */}      <div className="w-full">
         {/* Badges */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-white rounded-lg shadow p-6"
+          className="bg-white dark:bg-[#1f2937] rounded-lg shadow p-6"
         >
-          <h2 className="text-2xl font-bold mb-6 flex items-center">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
             <FaMedal className="text-primary mr-2" /> Badges
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -247,11 +246,10 @@ const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
                   ) : (
                     <FaRegStar className="text-gray-300 text-xl" />
                   )}
-                </div>
-                <h3 className={`font-semibold ${badge.earned ? 'text-white' : 'text-gray-800'}`}>
+                </div>                <h3 className={`font-semibold ${badge.earned ? 'text-white' : 'text-gray-800 dark:text-white'}`}>
                   {badge.name}
                 </h3>
-                <p className={`text-xs mt-1 ${badge.earned ? 'text-white text-opacity-80' : 'text-gray-600'}`}>
+                <p className={`text-xs mt-1 ${badge.earned ? 'text-white text-opacity-80' : 'text-gray-600 dark:text-gray-300'}`}>
                   {badge.description}
                 </p>
                 {badge.earned && (
