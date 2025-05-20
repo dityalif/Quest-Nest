@@ -87,8 +87,7 @@ export default function App() {
               <Navigate to="/login" />
             )
           } />
-          
-          <Route path="/login" element={
+            <Route path="/login" element={
             isLoading ? (
               <div className="flex justify-center items-center h-screen">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -97,22 +96,21 @@ export default function App() {
               <Navigate to="/home" />
             ) : (
               <>
-                <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+                <LandingNavbar />
                 <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
                   <LoginPage onLogin={handleLogin} />
                 </main>
               </>
             )
           } />
-          
-          <Route path="/register" element={
+            <Route path="/register" element={
             <>
-              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+              <LandingNavbar />
               <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
                 <RegisterPage onRegister={handleRegister} />
               </main>
             </>
-          } />        
+          } />
           
           <Route path="/profile" element={
             isLoading ? (

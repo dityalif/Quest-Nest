@@ -68,25 +68,25 @@ const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
       .then(res => setBadges(res.data.data));
   };
 
-  return (
-    <motion.div
+  return (    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
+      className="text-white"
     >
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+      <div className="bg-[#1e2736] rounded-lg shadow-lg overflow-hidden mb-8">
         {/* Header/Banner */}
-        <div className="bg-gradient-to-r from-primary to-primary-dark h-32 relative">
+        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 h-32 relative">
           <button 
             onClick={handleEditToggle} 
             className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors"
           >
-            <FaEdit className="text-primary" />
+            <FaEdit className="text-purple-600" />
           </button>
         </div>        {/* Profile Info */}
         <div className="px-6 pb-6 relative">
           <div className="flex flex-col items-center -mt-16 mb-4">
-            <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden shadow-lg bg-white z-10">
+            <div className="w-32 h-32 rounded-full border-4 border-[#1e2736] overflow-hidden shadow-lg bg-white z-10">
               <img 
                 src={getAvatarUrl(user)} 
                 alt={user?.name} 
@@ -94,13 +94,13 @@ const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
               />
             </div>
             <div className="mt-4 text-center w-full">
-              <h1 className="text-2xl font-bold text-gray-800">{user?.name}</h1>
-              <p className="text-gray-600">@{user?.username}</p>
+              <h1 className="text-2xl font-bold text-white">{user?.name}</h1>
+              <p className="text-gray-400">@{user?.username}</p>
               <div className="flex items-center mt-2 justify-center">
-                <div className="flex items-center bg-primary text-white px-3 py-1 rounded-full text-sm mr-3">
+                <div className="flex items-center bg-purple-600 text-white px-3 py-1 rounded-full text-sm mr-3">
                   <FaStar className="mr-1" /> Level {user?.level}
                 </div>
-                <span className="text-gray-600 text-sm">Member since {user?.joinDate}</span>
+                <span className="text-gray-400 text-sm">Member since {user?.joinDate}</span>
               </div>
             </div>
           </div>
@@ -191,67 +191,45 @@ const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
             </p>
           </div>
         </div>
-      </div>
-
-      {/* Stats and Badges */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* User Stats */}
+      </div>      {/* Badges Section - Full Width */}
+      <div className="w-full">
+        {/* Badges */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           className="bg-white rounded-lg shadow p-6"
         >
-          <h2 className="text-xl font-bold mb-4 flex items-center">
-            <FaChartLine className="text-primary mr-2" /> Stats
-          </h2>
-          <div className="grid grid-cols-2 gap-4">
-            {user?.stats?.map((stat, index) => (
-              <div key={index} className="p-3 bg-gray-50 rounded-lg text-center">
-                <div className="text-lg font-bold text-primary">{stat.value}</div>
-                <div className="text-xs text-gray-600">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Badges */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-white rounded-lg shadow p-6 md:col-span-2"
-        >
-          <h2 className="text-xl font-bold mb-4 flex items-center">
+          <h2 className="text-2xl font-bold mb-6 flex items-center">
             <FaMedal className="text-primary mr-2" /> Badges
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {badges.map((badge) => (
               <motion.div
                 key={badge.id}
                 whileHover={{ scale: 1.03 }}
-                className={`p-4 rounded-lg border ${badge.earned ? 'border-primary bg-primary bg-opacity-5' : 'border-gray-200'}`}
+                className={`p-5 rounded-lg border ${badge.earned ? 'border-primary bg-primary bg-opacity-5' : 'border-gray-200'}`}
               >
-                <div className="flex justify-between items-center mb-2">
-                  <div className="p-2 rounded-full bg-gray-100">
-                    <div className="text-2xl">
+                <div className="flex justify-between items-center mb-3">
+                  <div className="p-3 rounded-full bg-gray-100">
+                    <div className="text-3xl">
                       {badge.icon}
                     </div>
                   </div>
                   {badge.earned ? (
-                    <FaStar className="text-yellow-500" />
+                    <FaStar className="text-yellow-500 text-xl" />
                   ) : (
-                    <FaRegStar className="text-gray-300" />
+                    <FaRegStar className="text-gray-300 text-xl" />
                   )}
                 </div>
-                <h3 className="font-semibold text-gray-800">{badge.name}</h3>
-                <p className="text-xs text-gray-600 mt-1">{badge.description}</p>
-                <div className="mt-2 text-xs">
-                  <div className="flex justify-between mb-1">
+                <h3 className="font-semibold text-gray-800 text-lg">{badge.name}</h3>
+                <p className="text-sm text-gray-600 mt-2">{badge.description}</p>
+                <div className="mt-3">
+                  <div className="flex justify-between mb-2">
                     <span className="font-medium">Progress</span>
                     <span>{badge.progress}</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
                       className={`rounded-full h-full ${badge.earned ? 'bg-primary' : 'bg-gray-400'}`}
                       style={{
@@ -270,27 +248,6 @@ const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
           </div>
         </motion.div>
       </div>
-
-      {/* Recent Activity */}
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-        className="bg-white rounded-lg shadow p-6 mt-8"
-      >
-        <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
-        <div className="space-y-4">
-          {user?.activityHistory?.map((activity) => (
-            <div key={activity.id} className="p-4 border-l-4 border-primary rounded-r-lg bg-gray-50">
-              <div className="flex justify-between">
-                <h3 className="font-semibold">{activity.activity}</h3>
-                <span className="text-primary font-bold">+{activity.xp} XP</span>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">{activity.date}</p>
-            </div>
-          ))}
-        </div>
-      </motion.div>
     </motion.div>
   );
 };

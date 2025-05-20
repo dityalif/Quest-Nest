@@ -265,7 +265,6 @@ const HomePage = ({ userData }) => {
                         }`}>
                           {challenge.difficulty}
                         </span>
-                        <span className="text-gray-500">Due: {challenge.dueDate}</span>
                       </div>
                     </div>
                     <span className="font-bold text-primary flex items-center">
