@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { FaStar, FaTrophy, FaFireAlt, FaUsers, FaCheck, FaMedal, FaAward } from 'react-icons/fa';
 import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const HomePage = ({ userData }) => {
   const [stats, setStats] = useState(null);
@@ -151,21 +152,11 @@ const HomePage = ({ userData }) => {
         alert('Failed to complete challenge. Please try again.');
       });
   };
-
   const progressPercentage = stats ? (stats.xp / stats.nextLevelXp) * 100 : 0;
-
   if (isLoading || !stats) {
     return (
       <div className="flex justify-center items-center h-[80vh]">
-        <div className="animate-glow bg-primary p-4 rounded-full">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="text-white text-4xl"
-          >
-            <FaFireAlt />
-          </motion.div>
-        </div>
+        <LoadingSpinner size="large" />
       </div>
     );
   }

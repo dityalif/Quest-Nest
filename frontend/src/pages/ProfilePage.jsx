@@ -3,22 +3,33 @@ import { motion } from 'framer-motion';
 import { FaTrophy, FaMedal, FaStar, FaRegStar, FaChartLine, FaEdit, FaBolt, FaAward } from 'react-icons/fa';
 import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
+import LoadingSpinner from '../components/LoadingSpinner';
 
-const ProfilePage = ({ userData }) => {
-  const [user, setUser] = useState(null);
+const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
   const [badges, setBadges] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    if (!userData) return;
-    axios.get(`/users/id/${userData.id}`)
+  useEffect(() => {    if (!userData) {
+      setIsLoading(false);
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    const fetchUserData = axios.get(`/users/id/${userData.id}`)
       .then(res => {
         setUser(res.data.data);
         setEditedUser(res.data.data);
       });
-    axios.get(`/badges/user/${userData.id}`)
+      
+    const fetchBadges = axios.get(`/badges/user/${userData.id}`)
       .then(res => setBadges(res.data.data));
+      
+    Promise.all([fetchUserData, fetchBadges])
+      .catch(err => console.error("Error fetching profile data:", err))
+      .finally(() => setIsLoading(false));
   }, [userData]);
 
   const handleEditToggle = () => {
