@@ -88,6 +88,18 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
     }
   }, [filteredTeams]);
 
+  const fetchUserTeams = () => {
+    if (userData?.id) {
+      axios.get(`/teams/user/${userData.id}`)
+        .then(res => {
+          setUserTeams(res.data.data);
+        })
+        .catch(error => {
+          console.error('Error fetching user teams:', error);
+        });
+    }
+  };
+
   const handleCreateTeam = (formData) => {
     axios.post('/teams', {
       ...formData,
@@ -109,22 +121,22 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
   };
 
   const handleJoinTeam = (team_id) => {
-    axios.post('/teams/join', {
+    axios.post('/teams/add-member', {
       team_id,
       user_id: userData.id
     })
-      .then(res => {
-        alert('Joined team successfully!');
-        fetchUserTeams();
-        
-        // Check if Social Butterfly badge was earned
-        if (res.data.data.newBadges && res.data.data.newBadges.length > 0) {
-          setNewBadge(res.data.data.newBadges[0]);
-        }
-      })
-      .catch(err => {
-        alert(`Failed to join team: ${err.response?.data?.message || 'Unknown error'}`);
-      });
+    .then(res => {
+      alert('Joined team successfully!');
+      fetchUserTeams();
+      
+      // Check if Social Butterfly badge was earned
+      if (res.data.data.newBadges && res.data.data.newBadges.length > 0) {
+        setNewBadge(res.data.data.newBadges[0]);
+      }
+    })
+    .catch(err => {
+      alert(`Failed to join team: ${err.response?.data?.message || 'Unknown error'}`);
+    });
   };
 
   const handleLeaveTeam = async (teamId) => {
