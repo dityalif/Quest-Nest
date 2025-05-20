@@ -326,50 +326,48 @@ span:has(+ span.flex)::before {
 .grid > div:nth-child(5) { animation-delay: 0.5s; }
 .grid > div:nth-child(6) { animation-delay: 0.6s; }
 
-/* Dark mode support (optional) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-light: #111827;
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.5);
-  }
+/* Dark mode support */
+.dark-mode {
+  --bg-light: #111827;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
 
-  body {
-    background-image: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-  }
+.dark-mode body {
+  background-image: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+}
 
-  .grid > div {
-    background-color: #1f2937;
-    border: 1px solid #374151;
-  }
+.dark-mode .grid > div {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+}
 
-  .relative input {
-    background-color: #1f2937;
-    border-color: #374151;
-    color: #f9fafb;
-  }
+.dark-mode .relative input {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #f9fafb;
+}
 
-  .mb-6 button:not(.bg-primary) {
-    background-color: #374151;
-    color: #f9fafb;
-  }
+.dark-mode .mb-6 button:not(.bg-primary) {
+  background-color: #374151;
+  color: #f9fafb;
+}
 
-  span[class*="bg-green-100"] {
-    background: #065f46;
-    color: #d1fae5;
-  }
+.dark-mode span[class*="bg-green-100"] {
+  background: #065f46;
+  color: #d1fae5;
+}
 
-  span[class*="bg-yellow-100"] {
-    background: #92400e;
-    color: #fef3c7;
-  }
+.dark-mode span[class*="bg-yellow-100"] {
+  background: #92400e;
+  color: #fef3c7;
+}
 
-  span[class*="bg-red-100"] {
-    background: #991b1b;
-    color: #fee2e2;
-  }
+.dark-mode span[class*="bg-red-100"] {
+  background: #991b1b;
+  color: #fee2e2;
 }
 
 /* Responsive styles */

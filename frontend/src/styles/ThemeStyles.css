@@ -7,6 +7,7 @@
   --color-accent: #7c3aed;
   --color-accent-hover: #6d28d9;
   --color-primary: #1e40af;
+  --color-primary-rgb: 30, 64, 175;
   --color-primary-hover: #1e3a8a;
   --color-secondary: #10b981;
   --color-secondary-hover: #059669;
@@ -37,6 +38,7 @@
   --color-accent: #8b5cf6;
   --color-accent-hover: #7c3aed;
   --color-primary: #3b82f6;
+  --color-primary-rgb: 59, 130, 246;
   --color-primary-hover: #2563eb;
   --color-secondary: #10b981;
   --color-secondary-hover: #059669;

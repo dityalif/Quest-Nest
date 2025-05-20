@@ -11,9 +11,8 @@ export const ThemeProvider = ({ children }) => {
   // Check if user has previously set a theme preference
   const [darkMode, setDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem('darkMode');
-    // Also check system preference if no saved preference
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    return savedTheme ? JSON.parse(savedTheme) : prefersDark;
+    // Use saved preference or default to light mode
+    return savedTheme ? JSON.parse(savedTheme) : false;
   });
 
   // Toggle dark mode function
@@ -33,24 +32,6 @@ export const ThemeProvider = ({ children }) => {
     // Save user preference
     localStorage.setItem('darkMode', JSON.stringify(darkMode));
   }, [darkMode]);
-
-  // Listen for system preference changes
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    const handleChange = (e) => {
-      // Only update if user hasn't explicitly set a preference
-      if (localStorage.getItem('darkMode') === null) {
-        setDarkMode(e.matches);
-      }
-    };
-    
-    mediaQuery.addEventListener('change', handleChange);
-    
-    return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-    };
-  }, []);
 
   // Provide context value to children
   return (

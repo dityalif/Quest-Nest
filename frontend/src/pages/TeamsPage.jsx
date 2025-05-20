@@ -4,6 +4,7 @@ import { FaUsers, FaPlus, FaSearch, FaUserPlus, FaShieldAlt, FaChevronDown, FaCh
 import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
 import CreateTeamModal from '../components/CreateTeamModal';
+import './TeamsPage.css';
 
 const TeamsPage = ({ isLoggedIn, userData }) => {
   const [teams, setTeams] = useState([]);
@@ -188,17 +189,16 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
           </div>
         ) : userTeams.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {userTeams.map((team) => (
-              <motion.div
+            {userTeams.map((team) => (              <motion.div
                 key={team.id}
                 whileHover={{ scale: 1.02 }}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
+                className="teams-card"
               >
-                <div className="p-6 border-b">
+                <div className="p-6 border-b team-browse-border">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800">{team.name}</h3>
-                      <p className="text-gray-600 mt-2">{team.description || 'No description provided'}</p>
+                      <h3 className="text-lg font-semibold team-name">{team.name}</h3>
+                      <p className="team-desc mt-2">{team.description || 'No description provided'}</p>
                     </div>
                     <div className="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
                       {(userTeamsXp[team.id] || 0).toLocaleString()} XP
@@ -206,7 +206,7 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
                   </div>
                 </div>
                 
-                <div className="p-4 bg-gray-50">
+                <div className="p-4 teams-card-footer">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
                       <FaShieldAlt className="text-primary mr-2" />
@@ -223,9 +223,8 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
               </motion.div>
             ))}
           </div>
-        ) : (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <p className="text-gray-600 mb-4">You are not part of any teams yet.</p>
+        ) : (          <div className="no-teams-container p-8 text-center">
+            <p className="no-teams-message mb-4">You are not part of any teams yet.</p>
             <button
               onClick={() => setShowModal(true)}
               className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg inline-flex items-center justify-center transition-colors"
@@ -247,11 +246,10 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
         </h2>
         
         <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="relative w-full sm:w-auto">
-            <input
+          <div className="relative w-full sm:w-auto">              <input
               type="text"
               placeholder="Search teams..."
-              className="pl-10 pr-4 py-2 w-full sm:w-64 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="pl-10 pr-4 py-2 w-full sm:w-64 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -263,27 +261,25 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
           <div className="flex justify-center items-center h-40">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
-        ) : filteredTeams.length > 0 ? (
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        ) : filteredTeams.length > 0 ? (          <div className="team-browse-container">
             {filteredTeams.map((team) => (
               <motion.div
                 key={team.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="border-b last:border-b-0"
+                className="border-b team-browse-border last:border-b-0"
               >
                 <div 
                   className="p-6 cursor-pointer"
                   onClick={() => toggleTeamExpand(team.id)}
                 >
                   <div className="flex justify-between items-center">
-                    <div className="flex items-center">
-                      <div className="bg-primary bg-opacity-10 p-3 rounded-lg mr-4">
+                    <div className="flex items-center">                      <div className="team-icon-bg p-3 rounded-lg mr-4">
                         <FaUsers className="text-primary" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-800">{team.name}</h3>
-                        <p className="text-gray-600">{team.description || 'No description provided'}</p>
+                        <h3 className="text-lg font-semibold team-name">{team.name}</h3>
+                        <p className="team-desc">{team.description || 'No description provided'}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
@@ -325,10 +321,9 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
               </motion.div>
             ))}
           </div>
-        ) : (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <h3 className="text-lg font-medium text-gray-500">No teams found</h3>
-            <p className="text-gray-400">Try adjusting your search criteria</p>
+        ) : (          <div className="no-teams-container p-8 text-center">
+            <h3 className="text-lg font-medium team-name">No teams found</h3>
+            <p className="no-teams-message">Try adjusting your search criteria</p>
           </div>
         )}
       </motion.section>
