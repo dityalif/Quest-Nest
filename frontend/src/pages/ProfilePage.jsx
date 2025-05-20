@@ -212,19 +212,17 @@ const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           className="bg-white dark:bg-[#1f2937] rounded-lg shadow p-6"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-            <FaMedal className="text-primary mr-2" /> Badges
+        >          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+            <FaMedal className="mr-2 text-primary dark:text-blue-400 fill-primary dark:fill-blue-400" style={{color: 'var(--color-primary, #1e40af)'}} /> Badges
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {badges.map((badge) => (
-              <motion.div
+            {badges.map((badge) => (              <motion.div
                 key={badge.id}
                 whileHover={{ scale: 1.03 }}
                 className={`p-4 rounded-lg ${
                   badge.earned 
                     ? 'bg-primary border-primary text-white' 
-                    : 'border border-gray-200 text-gray-700'
+                    : 'border border-gray-200 text-gray-700 dark:text-gray-300 dark:border-gray-700'
                 }`}
               >
                 <div className="flex justify-between items-center mb-3">
