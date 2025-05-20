@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaPlus, FaSearch, FaFire, FaStar, FaClock } from 'react-icons/fa';
 import AddChallengeModal from '../components/AddChallengeModal';
+import LoadingSpinner from '../components/LoadingSpinner';
 import axios from '../api/axios';
 import './ChallengesPage.css';
 
@@ -10,6 +11,7 @@ const ChallengesPage = ({ isLoggedIn, userData }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // First get all challenges
@@ -35,17 +37,20 @@ const ChallengesPage = ({ isLoggedIn, userData }) => {
                 }
                 return challenge;
               });
-              
-              setChallenges(allChallenges);
+                setChallenges(allChallenges);
               setFilteredChallenges(allChallenges);
+              setIsLoading(false);
             })
-            .catch(err => console.error("Failed to get user challenges:", err));
-        } else {
+            .catch(err => console.error("Failed to get user challenges:", err));        } else {
           setChallenges(allChallenges);
           setFilteredChallenges(allChallenges);
+          setIsLoading(false);
         }
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        setIsLoading(false);
+      });
   }, [userData]);
 
   // Filter challenges based on search term and active filter
@@ -176,7 +181,11 @@ const ChallengesPage = ({ isLoggedIn, userData }) => {
         </button>
       </div>
       
-      {filteredChallenges.length === 0 ? (
+      {isLoading ? (
+        <div className="flex justify-center items-center h-40">
+          <LoadingSpinner size="large" />
+        </div>
+      ) : filteredChallenges.length === 0 ? (
         <div className="text-center py-12">
           <h3 className="text-xl font-medium text-gray-600">No challenges found</h3>
           <p className="text-gray-500 mt-2">Try adjusting your search or filters</p>

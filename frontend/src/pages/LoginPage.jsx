@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FaUser, FaLock } from 'react-icons/fa';
 import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const LoginPage = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({
@@ -147,9 +148,8 @@ const LoginPage = ({ onLogin }) => {
             type="submit"
             className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg transition-colors duration-300 flex justify-center items-center"
             disabled={isLoading}
-          >
-            {isLoading ? (
-              <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+          >            {isLoading ? (
+              <LoadingSpinner size="small" />
             ) : (
               'Login'
             )}

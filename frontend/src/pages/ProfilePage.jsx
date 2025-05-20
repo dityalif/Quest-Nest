@@ -3,28 +3,53 @@ import { motion } from 'framer-motion';
 import { FaTrophy, FaMedal, FaStar, FaRegStar, FaChartLine, FaEdit, FaBolt, FaAward } from 'react-icons/fa';
 import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
+import LoadingSpinner from '../components/LoadingSpinner';
 
-const ProfilePage = ({ userData }) => {
-  const [user, setUser] = useState(null);
+const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
   const [badges, setBadges] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    if (!userData) return;
-    axios.get(`/users/id/${userData.id}`)
+  useEffect(() => {    if (!userData) {
+      setIsLoading(false);
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    const fetchUserData = axios.get(`/users/id/${userData.id}`)
       .then(res => {
         setUser(res.data.data);
         setEditedUser(res.data.data);
       });
-    axios.get(`/badges/user/${userData.id}`)
+      
+    const fetchBadges = axios.get(`/badges/user/${userData.id}`)
       .then(res => setBadges(res.data.data));
+      
+    Promise.all([fetchUserData, fetchBadges])
+      .catch(err => console.error("Error fetching profile data:", err))
+      .finally(() => setIsLoading(false));
   }, [userData]);
 
   const handleEditToggle = () => {
     if (isEditing && editedUser) {
-      axios.put('/users', editedUser)
-        .then(res => setUser(res.data.data))
+      // Siapkan payload hanya dengan field yang diizinkan
+      const payload = {
+        id: user.id,
+        name: editedUser.name,
+        username: editedUser.username,
+        email: editedUser.email,
+      };
+      if (editedUser.password && editedUser.password.length >= 6) {
+        payload.password = editedUser.password;
+      }
+      axios.put('/users', payload)
+        .then(res => {
+          setUser(res.data.data);
+          alert('Profile updated successfully!');
+          window.location.reload(); // Refresh page setelah update
+        })
         .catch(err => alert('Failed to update profile'));
     }
     setIsEditing(!isEditing);
@@ -36,6 +61,12 @@ const ProfilePage = ({ userData }) => {
   };
 
   const progressPercentage = user ? (user.xp / user.nextLevelXp) * 100 : 0;
+
+  const refreshBadges = () => {
+    if (!userData) return;
+    axios.get(`/badges/user/${userData.id}`)
+      .then(res => setBadges(res.data.data));
+  };
 
   return (
     <motion.div
@@ -108,15 +139,16 @@ const ProfilePage = ({ userData }) => {
                     className="w-full px-3 py-2 border rounded-md"
                   />
                 </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-                  <textarea
-                    name="bio"
-                    value={editedUser?.bio}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Password (leave blank if not changing)</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={editedUser?.password || ''}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border rounded-md"
-                    rows="3"
-                  ></textarea>
+                    placeholder="New password"
+                  />
                 </div>
               </div>
               <div className="mt-4 flex justify-end">
@@ -136,7 +168,7 @@ const ProfilePage = ({ userData }) => {
             </div>
           ) : (
             <div className="mt-6">
-              <p className="text-gray-700">{user?.bio}</p>
+              {/* Bio dihapus */}
             </div>
           )}
 
@@ -223,9 +255,12 @@ const ProfilePage = ({ userData }) => {
                     <div 
                       className={`rounded-full h-full ${badge.earned ? 'bg-primary' : 'bg-gray-400'}`}
                       style={{
-                        width: badge.progress && badge.progress.includes('/')
-                          ? `${(parseInt(badge.progress.split('/')[0]) / parseInt(badge.progress.split('/')[1]) * 100) || 0}%`
-                          : '0%'
+                        width: (() => {
+                          if (!badge.progress || !badge.progress.includes('/')) return '0%';
+                          const [curr, total] = badge.progress.split('/').map(Number);
+                          if (!total || isNaN(curr) || isNaN(total)) return '0%';
+                          return `${Math.min(100, Math.round((curr / total) * 100))}%`;
+                        })()
                       }}
                     ></div>
                   </div>

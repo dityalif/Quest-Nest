@@ -4,6 +4,7 @@ import { FaUsers, FaPlus, FaSearch, FaUserPlus, FaShieldAlt, FaChevronDown, FaCh
 import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
 import CreateTeamModal from '../components/CreateTeamModal';
+import LoadingSpinner from '../components/LoadingSpinner';
 import './TeamsPage.css';
 
 const TeamsPage = ({ isLoggedIn, userData }) => {
@@ -182,10 +183,9 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
             <FaPlus className="mr-2" /> Create Team
           </button>
         </div>
-        
-        {isLoading ? (
+          {isLoading ? (
           <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <LoadingSpinner size="large" />
           </div>
         ) : userTeams.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -256,12 +256,11 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
             <FaSearch className="absolute left-3 top-3 text-gray-400" />
           </div>
         </div>
-        
-        {isLoading ? (
+          {isLoading ? (
           <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <LoadingSpinner size="large" />
           </div>
-        ) : filteredTeams.length > 0 ? (          <div className="team-browse-container">
+        ) : filteredTeams.length > 0 ? (<div className="team-browse-container">
             {filteredTeams.map((team) => (
               <motion.div
                 key={team.id}

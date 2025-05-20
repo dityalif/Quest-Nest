@@ -3,6 +3,7 @@ import { FaTrophy, FaMedal, FaAward, FaUser, FaArrowUp, FaArrowDown, FaSearch, F
 import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../components/LoadingSpinner';
 import './LeaderboardPage.css';
 
 const LeaderboardPage = () => {
@@ -152,10 +153,9 @@ const LeaderboardPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-primary mb-4">Team Leaderboard</h1>
-      
-      {loading ? (
+        {loading ? (
         <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          <LoadingSpinner size="large" />
         </div>
       ) : error ? (
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
