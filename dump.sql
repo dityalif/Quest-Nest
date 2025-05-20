@@ -4,12 +4,15 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
+    username VARCHAR(50) UNIQUE,
     email VARCHAR(100) UNIQUE NOT NULL,
     password TEXT NOT NULL,
     xp INTEGER DEFAULT 0,
     level INTEGER DEFAULT 1,
+    avatar TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 
 CREATE TABLE challenges (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -37,6 +40,15 @@ CREATE TABLE badges (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     condition TEXT
+);
+
+CREATE TABLE user_badges (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    badge_id UUID REFERENCES badges(id) ON DELETE CASCADE,
+    earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    progress INTEGER DEFAULT 0,
+    UNIQUE (user_id, badge_id)
 );
 
 CREATE TABLE leaderboards (
@@ -73,3 +85,11 @@ CREATE TABLE challenge_participants (
     completed_at TIMESTAMP,
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO badges (name, description, condition) VALUES
+('Consistency King', 'Selesaikan challenge selama 7 hari berturut-turut.', 'complete_challenge_7_days_streak'),
+('Challenge Master', 'Selesaikan 20 challenge.', 'complete_20_challenges'),
+('First Blood', 'Selesaikan challenge pertama.', 'first_challenge_completed'),
+('Team Founder', 'Membuat tim baru.', 'create_team'),
+('Social Butterfly', 'Bergabung dengan 3 tim berbeda.', 'join_3_teams'),
+('Night Owl', 'Selesaikan challenge setelah jam 10 malam.', 'complete_challenge_after_10pm');
