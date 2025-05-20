@@ -1,4 +1,5 @@
 const teamRepo = require('../repositories/teams.repository');
+const badgeRepo = require('../repositories/badges.repository');
 
 const baseResponse = (res, success, code, message, data) => {
   res.status(code).json({ success, message, data });
@@ -11,6 +12,7 @@ exports.createTeam = async (req, res) => {
   }
   try {
     const team = await teamRepo.createTeam({ name, description, creator_id });
+    await badgeRepo.checkAndClaimBadges(req.body.creator_id);
     baseResponse(res, true, 201, "Team created", team);
   } catch (err) {
     baseResponse(res, false, 500, err.message, null);
