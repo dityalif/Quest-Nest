@@ -100,7 +100,6 @@ const ProfilePage = ({ userData }) => {  const [user, setUser] = useState(null);
                 <div className="flex items-center bg-primary text-white px-3 py-1 rounded-full text-sm mr-3">
                   <FaStar className="mr-1" /> Level {user?.level}
                 </div>
-                <span className="text-gray-600 text-sm">Member since {user?.joinDate}</span>
               </div>
             </div>
           </div>
