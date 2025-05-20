@@ -1,0 +1,50 @@
+/* Teams Page Styles */
+
+.teams-card {
+  background-color: var(--color-bg-secondary);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px var(--color-card-shadow);
+  overflow: hidden;
+  transition: all var(--transition-speed);
+}
+
+.teams-card-footer {
+  background-color: var(--color-bg-primary);
+  border-color: var(--color-border);
+  transition: all var(--transition-speed);
+}
+
+.team-desc {
+  color: var(--color-text-secondary);
+}
+
+.team-name {
+  color: var(--color-text-primary);
+}
+
+.team-icon-bg {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+}
+
+.no-teams-container {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px var(--color-card-shadow);
+}
+
+.no-teams-message {
+  color: var(--color-text-secondary);
+}
+
+.team-browse-container {
+  background-color: var(--color-bg-secondary);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px var(--color-card-shadow);
+  overflow: hidden;
+  border-color: var(--color-border);
+}
+
+.team-browse-border {
+  border-color: var(--color-border);
+}

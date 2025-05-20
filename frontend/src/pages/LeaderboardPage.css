@@ -1,0 +1,339 @@
+/* LeaderboardPage.css */
+
+/* Global Variables */
+:root {
+  --bg-light: #f9fafb;
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Global Styles */
+body {
+  background-color: var(--bg-light);
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Page Header */
+.leaderboard-header {
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Search Input */
+.search-container input {
+  transition: all 0.3s ease;
+}
+
+.search-container input:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+}
+
+/* Filters */
+.filter-buttons button {
+  transition: all 0.3s ease;
+}
+
+.filter-buttons button:hover:not(.active) {
+  background-color: #e5e7eb;
+}
+
+.filter-buttons button.active {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* Table Styling */
+.leaderboard-table {
+  animation: fadeIn 0.6s ease-out;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.leaderboard-table th {
+  background-color: #f3f4f6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.leaderboard-table th:hover {
+  background-color: #e5e7eb;
+}
+
+.leaderboard-table tr {
+  transition: all 0.2s ease;
+  animation: slideIn 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+/* Add staggered animation to rows */
+.leaderboard-table tr:nth-child(1) { animation-delay: 0.1s; }
+.leaderboard-table tr:nth-child(2) { animation-delay: 0.15s; }
+.leaderboard-table tr:nth-child(3) { animation-delay: 0.2s; }
+.leaderboard-table tr:nth-child(4) { animation-delay: 0.25s; }
+.leaderboard-table tr:nth-child(5) { animation-delay: 0.3s; }
+.leaderboard-table tr:nth-child(6) { animation-delay: 0.35s; }
+.leaderboard-table tr:nth-child(7) { animation-delay: 0.4s; }
+.leaderboard-table tr:nth-child(8) { animation-delay: 0.45s; }
+.leaderboard-table tr:nth-child(9) { animation-delay: 0.5s; }
+.leaderboard-table tr:nth-child(10) { animation-delay: 0.55s; }
+
+.leaderboard-table tr:hover {
+  background-color: #f9fafb;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Rank Cell */
+.leaderboard-table td:first-child {
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Top 3 Styling */
+.leaderboard-table tr:nth-child(1) td:first-child {
+  color: #fbbf24;
+}
+
+.leaderboard-table tr:nth-child(2) td:first-child {
+  color: #94a3b8;
+}
+
+.leaderboard-table tr:nth-child(3) td:first-child {
+  color: #b45309;
+}
+
+/* Avatar Styling */
+.user-avatar {
+  transition: all 0.3s ease;
+}
+
+.user-avatar:hover {
+  transform: scale(1.1);
+}
+
+/* Badge/Achievements */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-right: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: translateY(-2px);
+}
+
+.badge-blue {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-green {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.badge-purple {
+  background-color: #ede9fe;
+  color: #5b21b6;
+}
+
+.badge-yellow {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.pagination-button {
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  border-radius: 0.375rem;
+  transition: all 0.3s ease;
+}
+
+.pagination-button:hover:not(.active) {
+  background-color: #e5e7eb;
+}
+
+.pagination-button.active {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  animation: fadeIn 1s ease-out;
+}
+
+.empty-state svg {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Loading State */
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #4f46e5;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Score Highlight Animation */
+.score-highlight {
+  position: relative;
+}
+
+.score-highlight::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, #4f46e5, #8b5cf6);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .leaderboard-table {
+    font-size: 0.875rem;
+  }
+  
+  .px-6.py-4 {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+/* Dark Mode Support */
+.dark-mode {
+  --bg-light: #111827;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
+.dark-mode body {
+  background-image: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+}
+
+.dark-mode .bg-white, 
+.dark-mode .bg-gray-100 {
+  background-color: #1f2937 !important;
+  border-color: #374151;
+}
+
+.dark-mode .text-gray-600, 
+.dark-mode .text-gray-700, 
+.dark-mode .text-gray-900 {
+  color: #f9fafb !important;
+}
+
+.dark-mode .text-gray-500, 
+.dark-mode .text-gray-400 {
+  color: #d1d5db !important;
+}
+
+.dark-mode .hover\:bg-gray-50:hover {
+  background-color: #374151 !important;
+}
+
+.dark-mode .bg-gray-200 {
+  background-color: #4b5563 !important;
+}
+
+.dark-mode input {
+  background-color: #374151 !important;
+  border-color: #4b5563 !important;
+  color: #f9fafb !important;
+}
+
+.dark-mode input::placeholder {
+  color: #9ca3af !important;
+}
+
+.dark-mode .border {
+  border-color: #4b5563 !important;
+}
+
+.dark-mode .leaderboard-table th {
+  background-color: #374151;
+  color: #f9fafb;
+}
+
+.dark-mode .leaderboard-table tr:hover {
+  background-color: #1f2937;
+}
+
+.dark-mode .badge-blue {
+  background-color: #1e3a8a;
+  color: #bfdbfe;
+}
+
+.dark-mode .badge-green {
+  background-color: #065f46;
+  color: #d1fae5;
+}
+
+.dark-mode .badge-purple {
+  background-color: #5b21b6;
+  color: #ede9fe;
+}
+
+.dark-mode .badge-yellow {
+  background-color: #92400e;
+  color: #fef3c7;
+}
+
+.dark-mode .pagination-button:hover:not(.active) {
+  background-color: #374151;
+  color: #f9fafb;
+}
+
+.dark-mode .loading-spinner {
+  border-color: rgba(255, 255, 255, 0.2);
+  border-left-color: #8b5cf6;
+}
