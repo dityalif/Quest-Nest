@@ -1,13 +1,16 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaHome, FaTrophy, FaTasks, FaUser, FaBars, FaTimes, FaSignOutAlt, FaChevronDown, FaUserCircle } from 'react-icons/fa';
+import { FaHome, FaTrophy, FaTasks, FaUser, FaBars, FaTimes, FaSignOutAlt, FaChevronDown, FaUserCircle, FaUsers } from 'react-icons/fa';
 import { getAvatarUrl } from '../utils/avatar';
+import DarkModeToggle from './DarkModeToggle';
+import { ThemeContext } from '../utils/ThemeContext';
 
 const Navbar = ({ isLoggedIn, userData, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const { darkMode } = useContext(ThemeContext);
 
   const handleLogout = () => {
     onLogout();
@@ -38,15 +41,17 @@ const Navbar = ({ isLoggedIn, userData, onLogout }) => {
   }, []);
 
   return (
-    <nav className="bg-primary shadow-md">
+    <nav className={`bg-primary shadow-md transition-colors ${darkMode ? 'theme-transition' : ''}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex">            <div className="flex-shrink-0 flex items-center">
+          <div className="flex">
+            <div className="flex-shrink-0 flex items-center">
               <Link to={isLoggedIn ? "/home" : "/"} className="text-white text-2xl font-bold">
                 Quest<span className="text-accent">Nest</span>
               </Link>
             </div>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">              <Link to="/home" className="text-white hover:text-accent px-3 py-2 rounded-md text-sm font-medium flex items-center">
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">              
+              <Link to="/home" className="text-white hover:text-accent px-3 py-2 rounded-md text-sm font-medium flex items-center">
                 <FaHome className="mr-1" /> Home
               </Link>
               <Link to="/challenges" className="text-white hover:text-accent px-3 py-2 rounded-md text-sm font-medium flex items-center">
@@ -55,10 +60,18 @@ const Navbar = ({ isLoggedIn, userData, onLogout }) => {
               <Link to="/leaderboard" className="text-white hover:text-accent px-3 py-2 rounded-md text-sm font-medium flex items-center">
                 <FaTrophy className="mr-1" /> Leaderboard
               </Link>
+              <Link to="/teams" className="text-white hover:text-accent px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                <FaUsers className="mr-1" /> Teams
+              </Link>
             </div>
-          </div>          <div className="hidden sm:ml-6 sm:flex sm:items-center">
+          </div>
+          
+          <div className="hidden sm:ml-6 sm:flex sm:items-center">
+            {/* Dark Mode Toggle */}
+            <DarkModeToggle />
+            
             {isLoggedIn && userData ? (
-              <div className="relative" ref={dropdownRef}>
+              <div className="relative ml-3" ref={dropdownRef}>
                 <button 
                   onClick={toggleDropdown}
                   className="flex items-center text-white hover:text-accent px-3 py-2 rounded-md"
@@ -104,10 +117,14 @@ const Navbar = ({ isLoggedIn, userData, onLogout }) => {
               </>
             )}
           </div>
+          
           <div className="flex items-center sm:hidden">
+            {/* Mobile Dark Mode Toggle */}
+            <DarkModeToggle />
+            
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-accent focus:outline-none"
+              className="ml-2 inline-flex items-center justify-center p-2 rounded-md text-white hover:text-accent focus:outline-none"
             >
               {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
             </button>
@@ -118,7 +135,8 @@ const Navbar = ({ isLoggedIn, userData, onLogout }) => {
       {/* Mobile menu */}
       {isOpen && (
         <div className="sm:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1">            <Link to="/home" className="text-white hover:text-accent block px-3 py-2 rounded-md text-base font-medium" onClick={() => setIsOpen(false)}>
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            <Link to="/home" className="text-white hover:text-accent block px-3 py-2 rounded-md text-base font-medium" onClick={() => setIsOpen(false)}>
               <FaHome className="inline mr-2" /> Home
             </Link>
             <Link to="/challenges" className="text-white hover:text-accent block px-3 py-2 rounded-md text-base font-medium" onClick={() => setIsOpen(false)}>
@@ -126,7 +144,9 @@ const Navbar = ({ isLoggedIn, userData, onLogout }) => {
             </Link>
             <Link to="/leaderboard" className="text-white hover:text-accent block px-3 py-2 rounded-md text-base font-medium" onClick={() => setIsOpen(false)}>
               <FaTrophy className="inline mr-2" /> Leaderboard
-            </Link>            {isLoggedIn && userData ? (
+            </Link>
+            
+            {isLoggedIn && userData ? (
               <>
                 <div className="mt-3 mb-2 px-3 flex items-center">
                   <div className="w-8 h-8 rounded-full overflow-hidden mr-2 border-2 border-white">

@@ -1,961 +1,339 @@
-/* ChallengesPage.css - Animasi dan Efek Menarik */
+/* LeaderboardPage.css */
 
-/* Import Font */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-/* Variables */
+/* Global Variables */
 :root {
-  --primary: #4f46e5;
-  --primary-dark: #4338ca;
-  --accent: #f59e0b;
-  --accent-dark: #d97706;
-  --text-primary: #1f2937;
-  --text-secondary: #6b7280;
   --bg-light: #f9fafb;
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
   --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.15);
-  --animation-time: 0.3s;
+  --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Global Styles */
 body {
-  font-family: 'Poppins', sans-serif;
-  background: var(--bg-light);
-  background-image: linear-gradient(135deg, #f5f7ff 0%, #f9fafb 100%);
-  overflow-x: hidden;
+  background-color: var(--bg-light);
 }
 
-.container {
-  position: relative;
-}
-
-/* Page Title Animation */
-h1.text-3xl {
-  position: relative;
-  overflow: hidden;
-  padding-bottom: 0.25rem;
-}
-
-h1.text-3xl::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 3px;
-  background: var(--accent);
-  animation: titleUnderline 1.2s ease-in-out forwards;
-}
-
-@keyframes titleUnderline {
-  0% { width: 0; }
-  100% { width: 120px; }  
-}
-
-/* Search Input Animation */
-.relative input {
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.relative input:focus {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
-}
-
-.relative .text-gray-400 {
-  transition: all 0.3s ease;
-}
-
-.relative input:focus + .text-gray-400 {
-  color: var(--primary);
-  transform: scale(1.1);
-}
-
-/* Create Challenge Button */
-button.bg-accent {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  z-index: 1;
-}
-
-button.bg-accent::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: var(--accent-dark);
-  transition: all 0.4s ease-in-out;
-  z-index: -1;
-}
-
-button.bg-accent:hover::before {
-  left: 0;
-}
-
-button.bg-accent:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(245, 158, 11, 0.3);
-}
-
-/* Filter Buttons Animation */
-.mb-6 button {
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.mb-6 button:not(.bg-primary):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.mb-6 button.bg-primary {
-  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
-}
-
-/* Button Pulse Effect for Active Filters */
-.mb-6 button.bg-primary::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 120%;
-  height: 120%;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%) scale(0);
-  animation: pulse 2s infinite;
-  z-index: -1;
-}
-
-@keyframes pulse {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-  60% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-}
-
-/* Challenge Cards Animation */
-.grid > div {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  animation: fadeIn 0.6s ease-in-out;
-  backface-visibility: hidden;
-  will-change: transform;
-}
-
-.grid > div:hover {
-  transform: translateY(-10px);
-  box-shadow: var(--card-shadow-hover);
-}
-
+/* Animation Keyframes */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Challenge Card Content Animation */
-.grid > div .p-6 {
-  position: relative;
-  z-index: 1;
-}
-
-.grid > div::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 5px;
-  background: linear-gradient(to right, var(--primary), var(--accent));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s ease;
-}
-
-.grid > div:hover::before {
-  transform: scaleX(1);
-}
-
-/* Challenge Difficulty Tags */
-span[class*="bg-green-100"] {
-  background: linear-gradient(135deg, rgba(167, 243, 208, 0.5) 0%, rgba(110, 231, 183, 0.5) 100%);
-  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
-  animation: fadeIn 0.5s ease-out;
-}
-
-span[class*="bg-yellow-100"] {
-  background: linear-gradient(135deg, rgba(254, 243, 199, 0.5) 0%, rgba(253, 230, 138, 0.5) 100%);
-  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
-  animation: fadeIn 0.5s ease-out;
-}
-
-span[class*="bg-red-100"] {
-  background: linear-gradient(135deg, rgba(254, 226, 226, 0.5) 0%, rgba(252, 165, 165, 0.5) 100%);
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
-  animation: fadeIn 0.5s ease-out;
-}
-
-/* Challenge Points Stars Animation */
-.text-yellow-500 {
-  animation: starTwinkle 2s infinite alternate ease-in-out;
-}
-
-@keyframes starTwinkle {
-  0% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.2); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.9; }
-}
-
-/* Join Challenge Button */
-.grid button {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  z-index: 1;
-}
-
-.grid button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0) 100%);
-  transition: all 0.6s ease;
-  z-index: -1;
-}
-
-.grid button:hover::before {
-  left: 100%;
-}
-
-.grid button:hover:not(:disabled) {
-  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
-  letter-spacing: 0.5px;
-}
-
-/* No Challenges Found Animation */
-.py-12 {
-  animation: fadeInUp 0.8s ease-out;
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Modal Animation */
-[class*="modal-backdrop"] {
-  animation: fadeBackground 0.3s ease-out forwards;
-}
-
-@keyframes fadeBackground {
-  from { background-color: rgba(0, 0, 0, 0); }
-  to { background-color: rgba(0, 0, 0, 0.5); }
-}
-
-.modal {
-  animation: modalSlideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes modalSlideIn {
-  from { transform: translateY(-50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* Shimmer Loading Effect for Cards (for future implementation) */
-@keyframes shimmer {
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
-}
-
-.loading-card {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 1000px 100%;
-  animation: shimmer 2s infinite;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #c7d2fe;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
-}
-
-/* Animation for category tags */
-span:has(+ span.flex) {
-  position: relative;
-  padding-left: 0.5rem;
-}
-
-span:has(+ span.flex)::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 80%;
-  background: var(--accent);
-  border-radius: 3px;
-}
-
-/* Challenge card staggered animation */
-.grid > div:nth-child(1) { animation-delay: 0.1s; }
-.grid > div:nth-child(2) { animation-delay: 0.2s; }
-.grid > div:nth-child(3) { animation-delay: 0.3s; }
-.grid > div:nth-child(4) { animation-delay: 0.4s; }
-.grid > div:nth-child(5) { animation-delay: 0.5s; }
-.grid > div:nth-child(6) { animation-delay: 0.6s; }
-
-/* Dark mode support (optional) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-light: #111827;
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.5);
-  }
-
-  body {
-    background-image: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-  }
-
-  .grid > div {
-    background-color: #1f2937;
-    border: 1px solid #374151;
-  }
-
-  .relative input {
-    background-color: #1f2937;
-    border-color: #374151;
-    color: #f9fafb;
-  }
-
-  .mb-6 button:not(.bg-primary) {
-    background-color: #374151;
-    color: #f9fafb;
-  }
-
-  span[class*="bg-green-100"] {
-    background: #065f46;
-    color: #d1fae5;
-  }
-
-  span[class*="bg-yellow-100"] {
-    background: #92400e;
-    color: #fef3c7;
-  }
-
-  span[class*="bg-red-100"] {
-    background: #991b1b;
-    color: #fee2e2;
-  }
-}
-
-/* Responsive styles */
-@media (max-width: 768px) {
-  .grid > div {
-    transform: none !important;
-  }
-
-  .grid > div:hover {
-    transform: translateY(-5px) !important;
-  }
-
-  h1.text-3xl::after {
-    animation-duration: 0.8s;
-  }
-
-  .mb-6 button::after {
-    display: none;
-  }
-}
-
-/* Tambahkan kode ini di bagian akhir file LeaderboardPage.css */
-
-/* ===== ANIMASI TAMBAHAN UNTUK LEADERBOARD ===== */
-
-/* Efek gradien bergerak pada background */
-body {
-  background: linear-gradient(130deg, var(--bg-color), #e6e8ff, #e2f0ff);
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
-}
-
-@keyframes gradientBG {
-  0% { background-position: 0% 50% }
-  50% { background-position: 100% 50% }
-  100% { background-position: 0% 50% }
-}
-
-/* Animasi untuk header */
-.text-3xl.font-bold.text-primary.mb-8 {
-  position: relative;
-  overflow: hidden;
-}
-
-.text-3xl.font-bold.text-primary.mb-8:after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--primary), var(--orange), var(--primary));
-  animation: widthAnimate 3s ease-in-out infinite;
-}
-
-@keyframes widthAnimate {
-  0% { width: 0; left: 0; }
-  50% { width: 100%; left: 0; }
-  100% { width: 0; left: 100%; }
-}
-
-/* Efek hover pada card */
-.bg-white {
-  position: relative;
-  overflow: hidden;
-}
-
-.bg-white:before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(116, 119, 255, 0.03) 0%, rgba(255, 255, 255, 0) 70%);
-  opacity: 0;
-  transform: scale(0.5);
-  transition: transform 0.6s ease-out, opacity 0.6s ease-out;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.bg-white:hover:before {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Efek konfeti untuk top 3 pemain - diperbaiki agar tidak mempengaruhi peringkat 1 */
-tbody tr:nth-child(2), 
-tbody tr:nth-child(3) {
-  position: relative;
-  overflow: hidden;
-}
-
-tbody tr:nth-child(2):after,
-tbody tr:nth-child(3):after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(circle, var(--silver) 1px, transparent 1px),
-    radial-gradient(circle, var(--bronze) 1px, transparent 1px),
-    radial-gradient(circle, var(--primary-light) 1px, transparent 1px);
-  background-size: 10px 10px;
-  background-position: 0 0, 5px 5px, 10px 10px;
-  opacity: 0.05;
-  pointer-events: none;
-  animation: confettiSpin 120s linear infinite;
-}
-
-/* Konfeti khusus untuk peringkat 1 */
-tbody tr:nth-child(1) {
-  position: relative;
-  overflow: hidden;
-}
-
-tbody tr:nth-child(1):after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(circle, var(--gold) 1px, transparent 1px),
-    radial-gradient(circle, rgba(251, 191, 36, 0.5) 2px, transparent 2px);
-  background-size: 15px 15px;
-  background-position: 0 0, 7px 7px;
-  opacity: 0.07;
-  pointer-events: none;
-  animation: goldConfettiSpin 100s linear infinite;
-}
-
-@keyframes goldConfettiSpin {
-  from { background-position: 0 0, 7px 7px; }
-  to { background-position: 500px 500px, 507px 507px; }
-}
-
-@keyframes confettiSpin {
-  from { background-position: 0 0, 5px 5px, 10px 10px; }
-  to { background-position: 500px 500px, 505px 505px, 510px 510px; }
-}
-
-/* Efek untuk trophy posisi 1 yang diperbaiki - tidak lagi mengakibatkan tampilan miring */
-tbody tr:nth-child(1) td:first-child {
-  position: relative;
-}
-
-tbody tr:nth-child(1) td:first-child:before {
-  content: '🏆';
-  position: absolute;
-  left: -5px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  opacity: 0;
-  z-index: 5;
-  animation: trophyAppear 5s ease-in-out infinite;
-}
-
-@keyframes trophyAppear {
-  0%, 100% { opacity: 0; transform: translateY(-50%) translateX(-10px); }
-  10%, 25% { opacity: 1; transform: translateY(-50%) translateX(0); }
-  30% { opacity: 0; transform: translateY(-50%) translateX(5px); }
-}
-
-/* Efek pulse pada posisi 1 - lebih halus */
-tbody tr:nth-child(1) {
-  position: relative;
-  z-index: 2;  /* Memastikan posisi 1 ada di atas */
-}
-
-tbody tr:nth-child(1):before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, rgba(251, 191, 36, 0.05) 0%, rgba(251, 191, 36, 0) 100%);
-  opacity: 0;
-  animation: goldBgPulse 4s ease-in-out infinite;
-  z-index: -1;
-  border-radius: 0.25rem;
-}
-
-@keyframes goldBgPulse {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
-}
-
-/* Efek hover pada tabel baris */
-tbody tr {
-  transition: all 0.3s ease;
-}
-
-tbody tr:hover {
-  transform: translateX(5px) scale(1.01);
-  box-shadow: -5px 0 10px rgba(116, 119, 255, 0.1);
-}
-
-/* Efek hover pada avatar */
-.h-10.w-10.rounded-full {
-  transition: all 0.3s ease;
-}
-
-tr:hover .h-10.w-10.rounded-full {
-  transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 0 0 3px rgba(116, 119, 255, 0.2);
-}
-
-/* Animasi untuk button */
-button.bg-primary, button.bg-gray-200 {
-  position: relative;
-  overflow: hidden;
-}
-
-button.bg-primary:after, button.bg-gray-200:after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.5);
-  opacity: 0;
-  border-radius: 100%;
-  transform: scale(1, 1) translate(-50%);
-  transform-origin: 50% 50%;
-}
-
-button.bg-primary:focus:after, button.bg-gray-200:focus:after {
-  animation: ripple 1s ease-out;
-}
-
-@keyframes ripple {
-  0% { transform: scale(0, 0); opacity: 0.5; }
-  100% { transform: scale(100, 100); opacity: 0; }
-}
-
-/* Efek pada QuestNest Logo */
-.QuestNest {
-  position: relative;
-}
-
-.Quest, .Nest {
-  display: inline-block;
-  animation: logoFloat 3s ease-in-out infinite;
-}
-
-.Nest {
-  animation-delay: 0.2s;
-}
-
-@keyframes logoFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-
-/* Animasi bergerak pada input pencarian */
-input[type="text"] {
-  border: 1px solid #e5e7eb;
-  transition: all 0.3s ease;
-}
-
-input[type="text"]:focus {
-  animation: searchPulse 2s infinite;
-}
-
-@keyframes searchPulse {
-  0% { box-shadow: 0 0 0 0 rgba(116, 119, 255, 0.4); }
-  70% { box-shadow: 0 0 0 5px rgba(116, 119, 255, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(116, 119, 255, 0); }
-}
-
-/* Efek loading glitter untuk halaman */
-.container {
-  position: relative;
-}
-
-.container:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.2), 
-    transparent
-  );
-  animation: loadingGlitter 3s ease-in-out;
-  pointer-events: none;
-  opacity: 0;
-}
-
-@keyframes loadingGlitter {
-  0% { transform: translateX(-100%); opacity: 0.8; }
-  100% { transform: translateX(100%); opacity: 0; }
-}
-
-/* Efek fokus pada baris saat hover */
-tbody tr {
-  position: relative;
-  z-index: 1;
-}
-
-tbody tr:hover {
-  z-index: 5;
-}
-
-/* Efek untuk score points ketika hover */
-tr:hover .text-lg.font-semibold.text-gray-900 {
-  animation: scoreJump 0.5s ease;
-}
-
-@keyframes scoreJump {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-}
-
-/* Animasi pada ikon trend */
-.text-green-500 svg, .text-red-500 svg {
-  animation-duration: 3s;
-}
-
-/* Animasi koneksi untuk garis tabel */
-tbody tr:after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0%;
-  height: 1px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    var(--primary-light), 
-    transparent
-  );
-  transition: width 0.5s ease;
-}
-
-tbody tr:hover:after {
-  width: 100%;
-}
-
-/* Efek sparkling untuk ranking emas - FIX PERINGKAT 1 MIRING */
-@keyframes sparkle {
-  0%, 100% { opacity: 0; transform: scale(0); }
-  20% { opacity: 1; transform: scale(1); }
-  80% { opacity: 1; transform: scale(1); }
-}
-
-tbody tr:nth-child(1) td:first-child .flex {
-  position: relative;
-  transform: none !important; /* Mencegah rotasi yang tidak diinginkan */
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-tbody tr:nth-child(1) td:first-child .flex svg,
-tbody tr:nth-child(1) td:first-child .flex img {
-  transform: none !important; /* Memastikan ikon trophy tidak miring */
-}
-
-/* Efek sparkle yang lebih elegan */
-tbody tr:nth-child(1) td:first-child .flex:before,
-tbody tr:nth-child(1) td:first-child .flex:after {
-  content: '';
-  position: absolute;
-  width: 15px;
-  height: 15px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%23fbbf24' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'%3E%3C/polygon%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
-  opacity: 0;
-}
-
-tbody tr:nth-child(1) td:first-child .flex:before {
-  top: -10px;
-  right: -20px;
-  animation: sparkle 3s ease-in-out infinite;
-  animation-delay: 1s;
-}
-
-tbody tr:nth-child(1) td:first-child .flex:after {
-  bottom: -5px;
-  left: -15px;
-  animation: sparkle 3s ease-in-out infinite;
-  animation-delay: 2s;
-}
-
-/* Animasi navbar yang lebih menarik */
-nav {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #7477FF, #6265f0);
-  animation: navGradient 10s ease infinite;
-}
-
-@keyframes navGradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Efek spotlight dan pola geometris pada navbar */
-nav:before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    rgba(255, 255, 255, 0.1) 50%, 
-    transparent 100%);
-  z-index: 1;
-  animation: navSpotlight 8s ease-in-out infinite;
-}
-
-@keyframes navSpotlight {
-  0% { left: -100%; opacity: 0.7; }
-  100% { left: 100%; opacity: 0.7; }
-}
-
-/* Latar belakang polka dot transparan untuk navbar */
-nav:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px;
-  z-index: 0;
-  opacity: 0.3;
-}
-
-/* Animasi untuk logo QuestNest di navbar */
-.QuestNest {
-  position: relative;
-  display: inline-flex !important;
-  align-items: center;
-  z-index: 2;
-}
-
-.Quest {
-  display: inline-block;
-  color: white;
-  animation: logoFloatY 3s ease-in-out infinite;
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-}
-
-.Nest {
-  display: inline-block;
-  color: var(--orange);
-  animation: logoFloatY 3s ease-in-out infinite;
-  animation-delay: 0.2s;
-  text-shadow: 0 0 15px rgba(255, 145, 77, 0.5);
-}
-
-@keyframes logoFloatY {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-
-/* Animasi untuk menu navigasi */
-nav a {
-  position: relative;
-  z-index: 2;
-  overflow: hidden;
-}
-
-nav a:before {
-  content: '';
-  position: absolute;
-  bottom: -3px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--orange);
-  transition: width 0.3s ease;
-}
-
-nav a:hover:before {
-  width: 100%;
-}
-
-/* Efek glow pada tombol di navbar */
-.login-btn, .register-btn {
-  position: relative;
-  z-index: 2;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.register-btn {
-  background: linear-gradient(135deg, #4ade80, #34d399);
-  box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
-  animation: btnPulse 2s infinite;
-}
-
-@keyframes btnPulse {
-  0%, 100% { box-shadow: 0 0 15px rgba(74, 222, 128, 0.5); }
-  50% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.8); }
-}
-
-.login-btn:hover, .register-btn:hover {
-  transform: translateY(-3px);
-}
-
-/* Tombol menu navigasi dengan animasi shine */
-nav a {
-  animation: fadeInNav 0.5s ease backwards;
-}
-
-nav a:nth-child(1) { animation-delay: 0.1s; }
-nav a:nth-child(2) { animation-delay: 0.2s; }
-nav a:nth-child(3) { animation-delay: 0.3s; }
-nav a:nth-child(4) { animation-delay: 0.4s; }
-
-@keyframes fadeInNav {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Efek highlight untuk item leaderboard pada navbar */
-nav a[href*="leaderboard"] {
-  position: relative;
-  animation: leaderboardHighlight 5s ease infinite;
-}
-
-@keyframes leaderboardHighlight {
-  0%, 100% { color: rgba(255, 255, 255, 0.9); }
-  50% { color: var(--orange); }
-}
-
-/* Efek slide in untuk filter buttons */
-button.bg-primary, button.bg-gray-200 {
-  animation: slideInButtons 0.8s ease backwards;
-}
-
-button.bg-primary:nth-child(1), button.bg-gray-200:nth-child(1) { animation-delay: 0.1s; }
-button.bg-primary:nth-child(2), button.bg-gray-200:nth-child(2) { animation-delay: 0.2s; }
-button.bg-primary:nth-child(3), button.bg-gray-200:nth-child(3) { animation-delay: 0.3s; }
-button.bg-primary:nth-child(4), button.bg-gray-200:nth-child(4) { animation-delay: 0.4s; }
-
-@keyframes slideInButtons {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-/* Animasi hover pada baris leaderboard - efek skala baris */
-tbody tr:hover td {
-  background-color: rgba(248, 249, 255, 0.8);
-}
-
-/* Efek gelembung pada hover search input */
-input[type="text"]:hover {
-  transform: translateY(-1px);
-}
-
-/* Loading state untuk tabel */
-.bg-white {
-  animation: tableAppear 0.8s ease backwards;
-}
-
-@keyframes tableAppear {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Efek untuk No Users Found */
-.text-center.py-8 .text-4xl {
-  animation: pulse 2s ease-in-out infinite;
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Page Header */
+.leaderboard-header {
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Search Input */
+.search-container input {
+  transition: all 0.3s ease;
+}
+
+.search-container input:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+}
+
+/* Filters */
+.filter-buttons button {
+  transition: all 0.3s ease;
+}
+
+.filter-buttons button:hover:not(.active) {
+  background-color: #e5e7eb;
+}
+
+.filter-buttons button.active {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* Table Styling */
+.leaderboard-table {
+  animation: fadeIn 0.6s ease-out;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.leaderboard-table th {
+  background-color: #f3f4f6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.leaderboard-table th:hover {
+  background-color: #e5e7eb;
+}
+
+.leaderboard-table tr {
+  transition: all 0.2s ease;
+  animation: slideIn 0.5s ease-out;
+  animation-fill-mode: both;
+}
+
+/* Add staggered animation to rows */
+.leaderboard-table tr:nth-child(1) { animation-delay: 0.1s; }
+.leaderboard-table tr:nth-child(2) { animation-delay: 0.15s; }
+.leaderboard-table tr:nth-child(3) { animation-delay: 0.2s; }
+.leaderboard-table tr:nth-child(4) { animation-delay: 0.25s; }
+.leaderboard-table tr:nth-child(5) { animation-delay: 0.3s; }
+.leaderboard-table tr:nth-child(6) { animation-delay: 0.35s; }
+.leaderboard-table tr:nth-child(7) { animation-delay: 0.4s; }
+.leaderboard-table tr:nth-child(8) { animation-delay: 0.45s; }
+.leaderboard-table tr:nth-child(9) { animation-delay: 0.5s; }
+.leaderboard-table tr:nth-child(10) { animation-delay: 0.55s; }
+
+.leaderboard-table tr:hover {
+  background-color: #f9fafb;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Rank Cell */
+.leaderboard-table td:first-child {
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Top 3 Styling */
+.leaderboard-table tr:nth-child(1) td:first-child {
+  color: #fbbf24;
+}
+
+.leaderboard-table tr:nth-child(2) td:first-child {
+  color: #94a3b8;
+}
+
+.leaderboard-table tr:nth-child(3) td:first-child {
+  color: #b45309;
+}
+
+/* Avatar Styling */
+.user-avatar {
+  transition: all 0.3s ease;
+}
+
+.user-avatar:hover {
+  transform: scale(1.1);
+}
+
+/* Badge/Achievements */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-right: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: translateY(-2px);
+}
+
+.badge-blue {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-green {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.badge-purple {
+  background-color: #ede9fe;
+  color: #5b21b6;
+}
+
+.badge-yellow {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.pagination-button {
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  border-radius: 0.375rem;
+  transition: all 0.3s ease;
+}
+
+.pagination-button:hover:not(.active) {
+  background-color: #e5e7eb;
+}
+
+.pagination-button.active {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  animation: fadeIn 1s ease-out;
+}
+
+.empty-state svg {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Loading State */
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #4f46e5;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Score Highlight Animation */
+.score-highlight {
+  position: relative;
+}
+
+.score-highlight::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, #4f46e5, #8b5cf6);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .leaderboard-table {
+    font-size: 0.875rem;
+  }
+  
+  .px-6.py-4 {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+/* Dark Mode Support */
+.dark-mode {
+  --bg-light: #111827;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
+.dark-mode body {
+  background-image: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+}
+
+.dark-mode .bg-white, 
+.dark-mode .bg-gray-100 {
+  background-color: #1f2937 !important;
+  border-color: #374151;
+}
+
+.dark-mode .text-gray-600, 
+.dark-mode .text-gray-700, 
+.dark-mode .text-gray-900 {
+  color: #f9fafb !important;
+}
+
+.dark-mode .text-gray-500, 
+.dark-mode .text-gray-400 {
+  color: #d1d5db !important;
+}
+
+.dark-mode .hover\:bg-gray-50:hover {
+  background-color: #374151 !important;
+}
+
+.dark-mode .bg-gray-200 {
+  background-color: #4b5563 !important;
+}
+
+.dark-mode input {
+  background-color: #374151 !important;
+  border-color: #4b5563 !important;
+  color: #f9fafb !important;
+}
+
+.dark-mode input::placeholder {
+  color: #9ca3af !important;
+}
+
+.dark-mode .border {
+  border-color: #4b5563 !important;
+}
+
+.dark-mode .leaderboard-table th {
+  background-color: #374151;
+  color: #f9fafb;
+}
+
+.dark-mode .leaderboard-table tr:hover {
+  background-color: #1f2937;
+}
+
+.dark-mode .badge-blue {
+  background-color: #1e3a8a;
+  color: #bfdbfe;
+}
+
+.dark-mode .badge-green {
+  background-color: #065f46;
+  color: #d1fae5;
+}
+
+.dark-mode .badge-purple {
+  background-color: #5b21b6;
+  color: #ede9fe;
+}
+
+.dark-mode .badge-yellow {
+  background-color: #92400e;
+  color: #fef3c7;
+}
+
+.dark-mode .pagination-button:hover:not(.active) {
+  background-color: #374151;
+  color: #f9fafb;
+}
+
+.dark-mode .loading-spinner {
+  border-color: rgba(255, 255, 255, 0.2);
+  border-left-color: #8b5cf6;
 }

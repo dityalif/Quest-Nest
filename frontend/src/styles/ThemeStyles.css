@@ -1,0 +1,158 @@
+/* Dark mode variables */
+:root {
+  --color-bg-primary: #f9fafb;
+  --color-bg-secondary: #ffffff;
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #4b5563;
+  --color-accent: #7c3aed;
+  --color-accent-hover: #6d28d9;
+  --color-primary: #1e40af;
+  --color-primary-rgb: 30, 64, 175;
+  --color-primary-hover: #1e3a8a;
+  --color-secondary: #10b981;
+  --color-secondary-hover: #059669;
+  --color-border: #e5e7eb;
+  --color-input-bg: #ffffff;
+  --color-input-text: #1f2937;
+  --color-input-border: #d1d5db;
+  --color-input-focus: #7c3aed;
+  --color-card-bg: #ffffff;
+  --color-card-shadow: rgba(0, 0, 0, 0.1);
+  --color-badge-green-bg: #d1fae5;
+  --color-badge-green-text: #065f46;
+  --color-badge-yellow-bg: #fef3c7;
+  --color-badge-yellow-text: #92400e;
+  --color-badge-red-bg: #fee2e2;
+  --color-badge-red-text: #b91c1c;
+  --color-nav-hover: rgba(255, 255, 255, 0.1);
+  --color-dropdown-shadow: rgba(0, 0, 0, 0.2);
+  --color-modal-overlay: rgba(0, 0, 0, 0.5);
+  --transition-speed: 300ms;
+}
+
+.dark-mode {
+  --color-bg-primary: #111827;
+  --color-bg-secondary: #1f2937;
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #d1d5db;
+  --color-accent: #8b5cf6;
+  --color-accent-hover: #7c3aed;
+  --color-primary: #3b82f6;
+  --color-primary-rgb: 59, 130, 246;
+  --color-primary-hover: #2563eb;
+  --color-secondary: #10b981;
+  --color-secondary-hover: #059669;
+  --color-border: #374151;
+  --color-input-bg: #1f2937;
+  --color-input-text: #f9fafb;
+  --color-input-border: #4b5563;
+  --color-input-focus: #8b5cf6;
+  --color-card-bg: #1f2937;
+  --color-card-shadow: rgba(0, 0, 0, 0.5);
+  --color-badge-green-bg: #064e3b;
+  --color-badge-green-text: #d1fae5;
+  --color-badge-yellow-bg: #78350f;
+  --color-badge-yellow-text: #fef3c7;
+  --color-badge-red-bg: #991b1b;
+  --color-badge-red-text: #fee2e2;
+  --color-nav-hover: rgba(255, 255, 255, 0.1);
+  --color-dropdown-shadow: rgba(0, 0, 0, 0.8);
+  --color-modal-overlay: rgba(0, 0, 0, 0.8);
+}
+
+/* Apply theme variables to elements */
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary) !important;
+}
+
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+.text-accent {
+  color: var(--color-accent) !important;
+}
+
+.bg-accent {
+  background-color: var(--color-accent) !important;
+}
+
+.bg-accent-dark {
+  background-color: var(--color-accent-hover) !important;
+}
+
+.bg-white {
+  background-color: var(--color-bg-secondary) !important;
+}
+
+.text-gray-400, .text-gray-500, .text-gray-600, .text-gray-700 {
+  color: var(--color-text-secondary) !important;
+}
+
+.text-gray-800, .text-gray-900 {
+  color: var(--color-text-primary) !important;
+}
+
+.border, .border-t, .border-b, .border-l, .border-r {
+  border-color: var(--color-border) !important;
+}
+
+.bg-gray-100 {
+  background-color: var(--color-input-bg) !important;
+}
+
+.shadow-md, .shadow-lg {
+  box-shadow: 0 4px 6px var(--color-card-shadow) !important;
+}
+
+/* Theme transition effects */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: var(--transition-speed);
+  transition-timing-function: ease-in-out;
+}
+
+/* Override specific component styles */
+.bg-primary-dark {
+  background-color: var(--color-primary-hover) !important;
+}
+
+.bg-secondary-dark {
+  background-color: var(--color-secondary-hover) !important;
+}
+
+input, textarea, select {
+  background-color: var(--color-input-bg) !important;
+  color: var(--color-input-text) !important;
+  border-color: var(--color-input-border) !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--color-input-focus) !important;
+  outline-color: var(--color-input-focus) !important;
+}
+
+/* Add smooth transition for theme toggle */
+.theme-transition {
+  transition: all 0.5s ease !important;
+}
+
+/* Subtle animation for dark mode toggle */
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.dark-mode-animation {
+  animation: rotate 0.5s ease-in-out;
+}

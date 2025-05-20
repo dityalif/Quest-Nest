@@ -9,11 +9,15 @@ import RegisterPage from './pages/RegisterPage';
 import ChallengesPage from './pages/ChallengesPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import LandingPage from './pages/LandingPage';
+import TeamsPage from './pages/TeamsPage';
+import { ThemeProvider } from './utils/ThemeContext';
+import './styles/ThemeStyles.css';
 import './App.css';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -22,6 +26,7 @@ export default function App() {
       setUserData(JSON.parse(userData));
       setIsLoggedIn(true);
     }
+    setIsLoading(false); 
   }, []);
 
   // Updated login function to store user data
@@ -47,90 +52,137 @@ export default function App() {
     setUserData(null);
     localStorage.removeItem('token');
     localStorage.removeItem('userData');
-  };  return (
-    <div className="min-h-screen bg-gray-100">
-      <Routes>
-        <Route path="/" element={
-          isLoggedIn ? (
-            <Navigate to="/home" />
-          ) : (
-            <>
-              <LandingNavbar />
-              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <LandingPage isLoggedIn={isLoggedIn} />
-              </main>
-            </>
-          )
-        } />
+  };  
 
-        <Route path="/home" element={
-          isLoggedIn ? (
-            <>
-              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
-              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <HomePage userData={userData} />
-              </main>
-            </>
-          ) : (
-            <Navigate to="/login" />
-          )
-        } />
-        
-        <Route path="/login" element={
-          <>
-            <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
-            <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-              <LoginPage onLogin={handleLogin} />
-            </main>
-          </>
-        } />
-        
-        <Route path="/register" element={
-          <>
-            <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
-            <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-              <RegisterPage onRegister={handleRegister} />
-            </main>
-          </>
-        } />        <Route path="/profile" element={
-          isLoggedIn ? (
-            <>
-              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
-              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <ProfilePage userData={userData} />
-              </main>
-            </>
-          ) : (
-            <Navigate to="/login" />
-          )
-        } />
+  return (
+    <ThemeProvider>
+      <div className="min-h-screen bg-gray-100">
+        <Routes>
+          <Route path="/" element={
+            isLoggedIn ? (
+              <Navigate to="/home" />
+            ) : (
+              <>
+                <LandingNavbar />
+                <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                  <LandingPage isLoggedIn={isLoggedIn} />
+                </main>
+              </>
+            )
+          } />
+
+          <Route path="/home" element={
+            isLoading ? (
+              <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              </div>
+            ) : isLoggedIn ? (
+              <>
+                <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+                <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                  <HomePage userData={userData} />
+                </main>
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
           
-        <Route path="/challenges" element={
-          isLoggedIn ? (
-            <>
-              <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
-              <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <ChallengesPage isLoggedIn={isLoggedIn} userData={userData} />
-              </main>
-            </>
-          ) : (
-            <Navigate to="/login" />
-          )
-        } />
+          <Route path="/login" element={
+            isLoading ? (
+              <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              </div>
+            ) : isLoggedIn ? (
+              <Navigate to="/home" />
+            ) : (
+              <>
+                <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+                <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                  <LoginPage onLogin={handleLogin} />
+                </main>
+              </>
+            )
+          } />
           
-        <Route path="/leaderboard" element={
-          isLoggedIn ? (
+          <Route path="/register" element={
             <>
               <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
               <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                <LeaderboardPage />
+                <RegisterPage onRegister={handleRegister} />
               </main>
             </>
-          ) : (
-            <Navigate to="/login" />
-          )
-        } />
-      </Routes>
-    </div>
+          } />        
+          
+          <Route path="/profile" element={
+            isLoading ? (
+              <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              </div>
+            ) : isLoggedIn ? (
+              <>
+                <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+                <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                  <ProfilePage userData={userData} />
+                </main>
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+            
+          <Route path="/challenges" element={
+            isLoading ? (
+              <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              </div>
+            ) : isLoggedIn ? (
+              <>
+                <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+                <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                  <ChallengesPage isLoggedIn={isLoggedIn} userData={userData} />
+                </main>
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+            
+          <Route path="/leaderboard" element={
+            isLoading ? (
+              <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              </div>
+            ) : isLoggedIn ? (
+              <>
+                <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+                <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                  <LeaderboardPage />
+                </main>
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+
+          <Route path="/teams" element={
+            isLoading ? (
+              <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              </div>
+            ) : isLoggedIn ? (
+              <>
+                <Navbar isLoggedIn={isLoggedIn} userData={userData} onLogout={handleLogout} />
+                <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                  <TeamsPage isLoggedIn={isLoggedIn} userData={userData} />
+                </main>
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          } />
+        </Routes>
+      </div>
+    </ThemeProvider>
   );
 }

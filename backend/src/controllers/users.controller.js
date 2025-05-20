@@ -87,18 +87,15 @@ exports.getUserById = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-  const { id, email, password, name } = req.body;
-  if (!id || !email || !password || !name) {
-    return baseResponse(res, false, 400, "ID, email, password, and name are required", null);
+  const { id, email, password, name, username } = req.body;
+  if (!id || !email || !name || !username) {
+    return baseResponse(res, false, 400, "ID, email, name, and username are required", null);
   }
   if (!emailRegex.test(email)) {
     return baseResponse(res, false, 400, "Invalid email format", null);
   }
-  if (!passRegex.test(password)) {
-    return baseResponse(res, false, 400, "Password must be at least 6 characters", null);
-  }
   try {
-    const user = await userRepository.updateUser({ id, email, password, name });
+    const user = await userRepository.updateUser({ id, email, password, name, username });
     if (!user) {
       return baseResponse(res, false, 404, "User not found", null);
     }

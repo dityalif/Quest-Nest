@@ -58,6 +58,21 @@ exports.getTeamById = async (team_id) => {
   return { ...teamRes.rows[0], members: membersRes.rows };
 };
 
+exports.getTeamMembersStats = async (team_id) => {
+  const res = await db.query(
+    `SELECT 
+        u.id, u.name, u.username, u.xp,
+        COUNT(cp.id) FILTER (WHERE cp.status = 'completed') AS "completedChallenges"
+     FROM team_members tm
+     JOIN users u ON tm.user_id = u.id
+     LEFT JOIN challenge_participants cp ON cp.user_id = u.id AND cp.status = 'completed'
+     WHERE tm.team_id = $1
+     GROUP BY u.id
+     ORDER BY u.xp DESC`,
+    [team_id]
+  );
+  return res.rows;
+};
 
 // Update team info
 exports.updateTeam = async ({ id, name, description }) => {
