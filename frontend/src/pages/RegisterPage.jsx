@@ -95,16 +95,14 @@ const RegisterPage = ({ onRegister }) => {
       }
       setIsLoading(false);
     }
-  };
-
-  return (
+  };  return (
     <div className="min-h-[80vh] flex flex-col justify-center items-center py-12 px-4">
       <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg"
-      >
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg"
+        >
         <div className="flex justify-center mb-6">
           <div className="bg-blue-500 text-white p-3 rounded-full">
             <FaUser size={24} />
@@ -254,8 +252,7 @@ const RegisterPage = ({ onRegister }) => {
             </Link>
           </p>
         </div>
-      </motion.div>
-    </div>
+      </motion.div>    </div>
   );
 };
 

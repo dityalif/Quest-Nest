@@ -92,4 +92,4 @@ INSERT INTO badges (name, description, condition) VALUES
 ('First Blood', 'Selesaikan challenge pertama.', 'first_challenge_completed'),
 ('Ancestor', 'Membuat tim baru.', 'create_team'),
 ('Social Butterfly', 'Bergabung dengan 3 tim berbeda.', 'join_3_teams'),
-('Night Owl', 'Selesaikan challenge setelah jam 10 malam.', 'complete_challenge_after_10pm');
+('Remontada', 'Selesaikan challenge setelah 7 hari tidak aktif.', 'comeback_after_7_days');
