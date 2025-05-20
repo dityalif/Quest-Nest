@@ -65,7 +65,10 @@ const HomePage = ({ userData }) => {
         });
         setChallenges(challengesRes.data.data);
         setLeaderboard(leaderboardRes.data.data);
-        setUserTeams(userTeamsRes.data.data);
+        
+        const teamsData = userTeamsRes.data.data || [];
+        const uniqueUserTeams = Array.from(new Map(teamsData.map(team => [team.id, team])).values());
+        setUserTeams(uniqueUserTeams);
       })
       .catch(err => console.error("Promise.all failed:", err))
       .finally(() => setIsLoading(false));
@@ -331,7 +334,10 @@ const HomePage = ({ userData }) => {
                 <div className="mt-3 flex justify-between items-center">
                   <div className="flex -space-x-2">
                     {team.members && team.members.slice(0, 4).map((member, index) => (
-                      <div key={index} className="w-7 h-7 rounded-full border-2 border-white overflow-hidden">
+                      <div
+                        key={`${team.id}-member-${index}`}
+                        className="w-7 h-7 rounded-full border-2 border-white overflow-hidden"
+                      >
                         <img 
                           src={getAvatarUrl(member) || `https://i.pravatar.cc/150?img=${index + 10}`}
                           alt="Team Member" 
