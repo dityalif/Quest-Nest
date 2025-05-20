@@ -70,16 +70,19 @@ exports.getUserById = async (id) => {
 };
 
 exports.updateUser = async (user) => {
-  const hashedPassword = await bcrypt.hash(user.password, SALT_ROUNDS);
-  
-  const query = user.avatar 
-    ? "UPDATE users SET name = $1, email = $2, password = $3, avatar = $5 WHERE id = $4 RETURNING *"
-    : "UPDATE users SET name = $1, email = $2, password = $3 WHERE id = $4 RETURNING *";
-  
-  const params = user.avatar 
-    ? [user.name, user.email, hashedPassword, user.id, user.avatar]
-    : [user.name, user.email, hashedPassword, user.id];
-  
+  // Ambil user lama
+  const oldUser = await db.query('SELECT * FROM users WHERE id = $1', [user.id]);
+  if (!oldUser.rows.length) return null;
+
+  let query, params;
+  if (user.password && user.password.length >= 6) {
+    const hashedPassword = await bcrypt.hash(user.password, SALT_ROUNDS);
+    query = "UPDATE users SET name = $1, email = $2, username = $3, password = $4 WHERE id = $5 RETURNING *";
+    params = [user.name, user.email, user.username, hashedPassword, user.id];
+  } else {
+    query = "UPDATE users SET name = $1, email = $2, username = $3 WHERE id = $4 RETURNING *";
+    params = [user.name, user.email, user.username, user.id];
+  }
   const res = await db.query(query, params);
   return res.rows[0];
 };

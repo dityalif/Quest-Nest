@@ -13,6 +13,8 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
   const [showModal, setShowModal] = useState(false);
   const [expandedTeamId, setExpandedTeamId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [userTeamsXp, setUserTeamsXp] = useState({}); 
+  const [allTeamsXp, setAllTeamsXp] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +51,38 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
       setFilteredTeams(teams);
     }
   }, [searchTerm, teams]);
+
+  useEffect(() => {
+    // Setelah userTeams di-set, fetch XP anggota untuk setiap tim
+    if (userTeams.length > 0) {
+      userTeams.forEach(async (team) => {
+        try {
+          const res = await axios.get(`/teams/${team.id}/members/stats`);
+          const members = res.data.data || [];
+          const totalXp = members.reduce((sum, member) => sum + (member.xp || 0), 0);
+          setUserTeamsXp(prev => ({ ...prev, [team.id]: totalXp }));
+        } catch (err) {
+          setUserTeamsXp(prev => ({ ...prev, [team.id]: 0 }));
+        }
+      });
+    }
+  }, [userTeams]);
+
+  useEffect(() => {
+    // Fetch total XP untuk setiap tim di browse teams
+    if (filteredTeams.length > 0) {
+      filteredTeams.forEach(async (team) => {
+        try {
+          const res = await axios.get(`/teams/${team.id}/members/stats`);
+          const members = res.data.data || [];
+          const totalXp = members.reduce((sum, member) => sum + (member.xp || 0), 0);
+          setAllTeamsXp(prev => ({ ...prev, [team.id]: totalXp }));
+        } catch (err) {
+          setAllTeamsXp(prev => ({ ...prev, [team.id]: 0 }));
+        }
+      });
+    }
+  }, [filteredTeams]);
 
   const handleCreateTeam = async (newTeam) => {
     try {
@@ -167,7 +201,7 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
                       <p className="text-gray-600 mt-2">{team.description || 'No description provided'}</p>
                     </div>
                     <div className="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
-                      {team.xp || 0} XP
+                      {(userTeamsXp[team.id] || 0).toLocaleString()} XP
                     </div>
                   </div>
                 </div>
@@ -254,7 +288,9 @@ const TeamsPage = ({ isLoggedIn, userData }) => {
                     </div>
                     <div className="flex items-center">
                       <div className="mr-4 text-right">
-                        <div className="text-primary font-semibold">{team.xp || 0} XP</div>
+                        <div className="text-primary font-semibold">
+                          {(allTeamsXp[team.id] || 0).toLocaleString()} XP
+                        </div>
                       </div>
                       {expandedTeamId === team.id ? (
                         <FaChevronUp className="text-gray-400" />

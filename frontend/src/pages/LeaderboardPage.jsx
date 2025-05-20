@@ -57,7 +57,7 @@ const LeaderboardPage = () => {
         if (teamRes && teamRes.data && teamRes.data.data) {
           const team = teamRes.data.data;
           if (team.id) {
-            // Ambil anggota tim beserta XP & completedChallenges langsung dari endpoint baru
+            setUserTeam(team); 
             return axios.get(`/teams/${team.id}/members/stats`).then(statsRes => {
               if (statsRes.data && statsRes.data.data) {
                 setTeamMembers(statsRes.data.data);
@@ -190,7 +190,9 @@ const LeaderboardPage = () => {
             </div>
             <div>
               <h2 className="font-semibold text-xl">{userTeam.name}</h2>
-              <p className="text-gray-500 text-sm">{userTeam.xp || 0} XP Total</p>
+              <p className="text-gray-500 text-sm">
+                {teamMembers.reduce((sum, member) => sum + (member.xp || 0), 0).toLocaleString()} XP Total
+              </p>
             </div>
           </div>
 

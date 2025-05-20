@@ -23,8 +23,22 @@ const ProfilePage = ({ userData }) => {
 
   const handleEditToggle = () => {
     if (isEditing && editedUser) {
-      axios.put('/users', editedUser)
-        .then(res => setUser(res.data.data))
+      // Siapkan payload hanya dengan field yang diizinkan
+      const payload = {
+        id: user.id,
+        name: editedUser.name,
+        username: editedUser.username,
+        email: editedUser.email,
+      };
+      if (editedUser.password && editedUser.password.length >= 6) {
+        payload.password = editedUser.password;
+      }
+      axios.put('/users', payload)
+        .then(res => {
+          setUser(res.data.data);
+          alert('Profile updated successfully!');
+          window.location.reload(); // Refresh page setelah update
+        })
         .catch(err => alert('Failed to update profile'));
     }
     setIsEditing(!isEditing);
@@ -108,15 +122,16 @@ const ProfilePage = ({ userData }) => {
                     className="w-full px-3 py-2 border rounded-md"
                   />
                 </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-                  <textarea
-                    name="bio"
-                    value={editedUser?.bio}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Password (leave blank if not changing)</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={editedUser?.password || ''}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border rounded-md"
-                    rows="3"
-                  ></textarea>
+                    placeholder="New password"
+                  />
                 </div>
               </div>
               <div className="mt-4 flex justify-end">
@@ -136,7 +151,7 @@ const ProfilePage = ({ userData }) => {
             </div>
           ) : (
             <div className="mt-6">
-              <p className="text-gray-700">{user?.bio}</p>
+              {/* Bio dihapus */}
             </div>
           )}
 
