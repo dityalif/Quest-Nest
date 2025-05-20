@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaStar, FaTrophy, FaFireAlt, FaUsers, FaCheck } from 'react-icons/fa';
+import { FaStar, FaTrophy, FaFireAlt, FaUsers, FaCheck, FaMedal, FaAward } from 'react-icons/fa';
 import axios from '../api/axios';
 import { getAvatarUrl } from '../utils/avatar';
 
@@ -13,6 +13,8 @@ const HomePage = ({ userData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [userTeamsXp, setUserTeamsXp] = useState({});
   const [userTeamsMembers, setUserTeamsMembers] = useState({});
+  const [userTeam, setUserTeam] = useState(null);
+  const [teamMembers, setTeamMembers] = useState([]);
 
   useEffect(() => {
     let userId;
@@ -91,6 +93,31 @@ const HomePage = ({ userData }) => {
     }
   }, [userTeams]);
 
+  useEffect(() => {
+    let userId = userData?.id;
+    if (!userId) {
+      const storedUserData = localStorage.getItem('userData');
+      if (storedUserData) {
+        try {
+          const parsedUserData = JSON.parse(storedUserData);
+          userId = parsedUserData.id;
+        } catch (err) {}
+      }
+    }
+    if (!userId) return;
+
+    // Fetch user team and members
+    axios.get(`/teams/user/${userId}`)
+      .then(res => {
+        const team = res.data.data && res.data.data.length > 0 ? res.data.data[0] : null;
+        setUserTeam(team);
+        if (team) {
+          axios.get(`/teams/${team.id}/members/stats`)
+            .then(statsRes => setTeamMembers(statsRes.data.data || []));
+        }
+      });
+  }, [userData]);
+
   const handleCompleteChallenge = (challengeId) => {
     if (!userData?.id) return;
     
@@ -142,6 +169,16 @@ const HomePage = ({ userData }) => {
       </div>
     );
   }
+
+  // Fungsi untuk render icon rank
+  const renderRankIcon = (rank) => {
+    switch(rank) {
+      case 1: return <FaTrophy className="text-yellow-500" />;
+      case 2: return <FaMedal className="text-gray-400" />;
+      case 3: return <FaAward className="text-amber-700" />;
+      default: return <span>#{rank}</span>;
+    }
+  };
 
   return (
     <motion.div
@@ -267,7 +304,7 @@ const HomePage = ({ userData }) => {
             </div>
           </motion.div>
 
-          {/* Leaderboard Preview */}
+          {/* Leaderboard Anggota Tim */}
           <motion.div
             initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -277,34 +314,46 @@ const HomePage = ({ userData }) => {
             <h2 className="text-xl font-bold mb-4 flex items-center">
               <FaTrophy className="text-yellow-500 mr-2" /> Leaderboard
             </h2>
-            <div className="space-y-3">
-              {leaderboard.map((user, index) => (
-                <motion.div
-                  key={user.id}
-                  whileHover={{ x: 5 }}
-                  className="flex items-center p-2 hover:bg-gray-50 rounded-md"
-                >
-                  <div className="w-8 h-8 flex justify-center items-center font-bold text-gray-500">
-                    #{index + 1}
-                  </div>
-                  <div className="w-10 h-10 rounded-full overflow-hidden ml-2">
-                    <img src={getAvatarUrl(user)} alt={user.name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="ml-3 flex-grow">
-                    <h3 className="font-medium text-gray-800">{user.name}</h3>
-                  </div>
-                  <div className="font-bold text-primary">{user.xp} XP</div>
-                </motion.div>
-              ))}
-            </div>
-            <div className="mt-4 text-center">
-              <Link 
-                to="/leaderboard" 
-                className="inline-block bg-primary hover:bg-primary-dark text-white font-medium px-4 py-2 rounded-md transition-colors duration-300"
-              >
-                View Full Leaderboard
-              </Link>
-            </div>
+            {userTeam ? (
+              <div>
+                <div className="font-semibold mb-2">{userTeam.name}</div>
+                <div className="space-y-3">
+                  {teamMembers
+                    .sort((a, b) => (b.xp || 0) - (a.xp || 0))
+                    .slice(0, 5)
+                    .map((member, idx) => (
+                      <motion.div
+                        key={member.id}
+                        whileHover={{ x: 5 }}
+                        className="flex items-center p-2 hover:bg-gray-50 rounded-md"
+                      >
+                        <div className="w-8 h-8 flex justify-center items-center font-bold text-gray-500">
+                          {renderRankIcon(idx + 1)}
+                        </div>
+                        <div className="w-10 h-10 rounded-full overflow-hidden ml-2">
+                          <img src={getAvatarUrl(member)} alt={member.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="ml-3 flex-grow">
+                          <h3 className="font-medium text-gray-800">{member.name}</h3>
+                        </div>
+                        <div className="font-bold text-primary">{(member.xp || 0).toLocaleString()} XP</div>
+                      </motion.div>
+                    ))}
+                </div>
+                <div className="mt-4 text-center">
+                  <Link 
+                    to="/leaderboard" 
+                    className="inline-block bg-primary hover:bg-primary-dark text-white font-medium px-4 py-2 rounded-md transition-colors duration-300"
+                  >
+                    View Full Leaderboard
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center text-gray-500">
+                Join a team to see your team leaderboard!
+              </div>
+            )}
           </motion.div>
         </div>
       </section>
